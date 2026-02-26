@@ -33,4 +33,5 @@ export interface BaizeSettings {
     // ── 高级设置 ──
     workerCount: number;
     logLevel: "debug" | "info" | "warn" | "error";
+    lastActiveTab?: string;
 }

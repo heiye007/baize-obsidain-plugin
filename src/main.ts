@@ -46,7 +46,7 @@ export default class BaizePlugin extends Plugin {
         // ── 4. 注册视图 ──
         this.registerView(
             VIEW_TYPE_BAIZE,
-            (leaf: WorkspaceLeaf) => new BaizeSidebarView(leaf)
+            (leaf: WorkspaceLeaf) => new BaizeSidebarView(leaf, this)
         );
 
         // ── 5. 注册设置面板 ──

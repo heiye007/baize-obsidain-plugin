@@ -3,6 +3,7 @@ import { mount, unmount } from "svelte";
 import { VIEW_TYPE_BAIZE } from "../../shared/constants";
 import { ICON_BAIZE } from "../../shared/icon";
 import type BaizePlugin from "../../main";
+import DesktopLayout from "../layouts/DesktopLayout.svelte";
 
 export class BaizeSidebarView extends ItemView {
     private component: any;
@@ -33,7 +34,8 @@ export class BaizeSidebarView extends ItemView {
         this.component = mount(DesktopLayout, {
             target: container,
             props: {
-                app: this.app
+                app: this.app,
+                plugin: this.plugin
             }
         });
     }

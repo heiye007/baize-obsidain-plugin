@@ -547,10 +547,10 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 - [x] iOS：适配 Safe Area（已在 Svelte 中实现）
 
 **4.3 桌面布局 (`ui/layouts/DesktopLayout.svelte`)**
-- [ ] 实现三栏 Tab 切换（搜索 / 对话 / 联想）
-- [ ] Tab 切换动画（渐变过渡）
-- [ ] 记住用户上次激活的 Tab
-- [ ] 面板顶部显示索引状态指示器
+- [x] 实现三栏 Tab 切换（搜索 / 对话 / 联想）
+- [x] Tab 切换动画（渐变过渡）
+- [x] 记住用户上次激活的 Tab（通过 `BaizeSettings.lastActiveTab`）
+- [x] 面板顶部显示索引状态指示器 (`StatusBar` 组件实时监听 EventBus)
 
 **4.4 移动布局 (`ui/layouts/MobileLayout.svelte`)**
 - [ ] 实现底部抽屉交互（半屏/全屏滑动手势）
