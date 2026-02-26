@@ -1,14 +1,16 @@
-/**
- * 白泽 Baize - 桌面端侧边栏视图
- * Obsidian ItemView 容器，挂载 Svelte DesktopLayout 组件
- */
 import { ItemView, WorkspaceLeaf } from "obsidian";
+import { mount, unmount } from "svelte";
 import { VIEW_TYPE_BAIZE } from "../../shared/constants";
 import { ICON_BAIZE } from "../../shared/icon";
+import type BaizePlugin from "../../main";
 
 export class BaizeSidebarView extends ItemView {
-    constructor(leaf: WorkspaceLeaf) {
+    private component: any;
+    private plugin: BaizePlugin;
+
+    constructor(leaf: WorkspaceLeaf, plugin: BaizePlugin) {
         super(leaf);
+        this.plugin = plugin;
     }
 
     getViewType(): string {
@@ -26,14 +28,20 @@ export class BaizeSidebarView extends ItemView {
     async onOpen(): Promise<void> {
         const container = this.containerEl.children[1];
         container.empty();
-        container.createEl("div", {
-            cls: "baize-root",
-            text: "白泽正在加载...",
+
+        // 挂载 Svelte 5 组件
+        this.component = mount(DesktopLayout, {
+            target: container,
+            props: {
+                app: this.app
+            }
         });
-        // TODO: 第四阶段挂载 Svelte DesktopLayout 组件
     }
 
     async onClose(): Promise<void> {
-        // TODO: 销毁 Svelte 组件实例
+        if (this.component) {
+            unmount(this.component);
+            this.component = null;
+        }
     }
 }

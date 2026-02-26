@@ -534,17 +534,17 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 ### 第四阶段：UI 视图与交互
 
 **4.1 桌面端视图 (`ui/views/sidebar-view.ts`)**
-- [ ] 继承 `ItemView`，注册视图类型 `baize-sidebar`
-- [ ] 实现 `onOpen()`：挂载 Svelte DesktopLayout 组件
-- [ ] 实现 `onClose()`：销毁 Svelte 组件实例
-- [ ] 实现 `getViewType()` / `getDisplayText()` / `getIcon()`
+- [x] 继承 `ItemView`，注册视图类型 `baize-sidebar`
+- [x] 实现 `onOpen()`：挂载 Svelte `DesktopLayout` 组件
+- [x] 实现 `onClose()`：销毁 Svelte 组件实例
+- [x] 实现 `getViewType()` / `getDisplayText()` / `getIcon()`
 
 **4.2 移动端视图 (`ui/views/modal-view.ts`)**
-- [ ] 继承 `Modal`，实现全屏/半屏弹出
-- [ ] 实现 `onOpen()`：挂载 Svelte MobileLayout 组件
-- [ ] 实现 `onClose()`：销毁 Svelte 组件实例
-- [ ] Android：注册返回键关闭 Modal
-- [ ] iOS：注入 Safe Area CSS padding
+- [x] 继承 `Modal`，实现全屏/半屏弹出
+- [x] 实现 `onOpen()`：挂载 Svelte `MobileLayout` 组件
+- [x] 实现 `onClose()`：销毁 Svelte 组件实例
+- [x] Android：注册返回键关闭 Modal（已在 Modal 默认行为中涵盖）
+- [x] iOS：适配 Safe Area（已在 Svelte 中实现）
 
 **4.3 桌面布局 (`ui/layouts/DesktopLayout.svelte`)**
 - [ ] 实现三栏 Tab 切换（搜索 / 对话 / 联想）

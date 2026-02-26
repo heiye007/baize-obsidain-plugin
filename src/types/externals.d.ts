@@ -32,3 +32,10 @@ declare module "@lancedb/lancedb" {
         toArray(): Promise<Record<string, unknown>[]>;
     }
 }
+
+/** 允许 TypeScript 识别 .svelte 组件文件 */
+declare module "*.svelte" {
+    import { Component } from "svelte";
+    const component: Component<any>;
+    export default component;
+}
