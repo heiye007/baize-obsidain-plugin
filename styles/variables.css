@@ -1,0 +1,48 @@
+/* ═══ 白泽 Baize - 全局 CSS 变量 ═══ */
+
+:root {
+    /* 主色调 - 玄金 */
+    --baize-gold: #c9a96e;
+    --baize-gold-light: #dfc392;
+    --baize-gold-dark: #a8884f;
+
+    /* 背景色 */
+    --baize-bg-primary: var(--background-primary);
+    --baize-bg-secondary: var(--background-secondary);
+    --baize-bg-panel: var(--background-secondary-alt);
+
+    /* 文字色 */
+    --baize-text-primary: var(--text-normal);
+    --baize-text-secondary: var(--text-muted);
+    --baize-text-accent: var(--baize-gold);
+
+    /* 间距 */
+    --baize-spacing-xs: 4px;
+    --baize-spacing-sm: 8px;
+    --baize-spacing-md: 16px;
+    --baize-spacing-lg: 24px;
+    --baize-spacing-xl: 32px;
+
+    /* 圆角 */
+    --baize-radius-sm: 4px;
+    --baize-radius-md: 8px;
+    --baize-radius-lg: 12px;
+    --baize-radius-full: 9999px;
+
+    /* 阴影 */
+    --baize-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --baize-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --baize-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+    /* 字体 */
+    --baize-font-size-xs: 11px;
+    --baize-font-size-sm: 13px;
+    --baize-font-size-md: 14px;
+    --baize-font-size-lg: 16px;
+    --baize-font-size-xl: 20px;
+
+    /* 动画 */
+    --baize-transition-fast: 150ms ease;
+    --baize-transition-normal: 250ms ease;
+    --baize-transition-slow: 400ms ease;
+}

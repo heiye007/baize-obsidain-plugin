@@ -1,0 +1,33 @@
+{
+  "name": "baize-obsidian-plugin",
+  "version": "0.1.0",
+  "description": "灵兽白泽 - Obsidian 语义搜索与知识助手插件",
+  "main": "build/main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs --watch",
+    "build": "node esbuild.config.mjs --production",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "obsidian",
+    "plugin",
+    "semantic-search",
+    "vector-database",
+    "rag",
+    "ai"
+  ],
+  "author": "heiye007",
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/svelte": "^5.0.4",
+    "@types/node": "^22.13.5",
+    "builtin-modules": "^4.0.0",
+    "esbuild": "^0.25.0",
+    "esbuild-svelte": "^0.8.2",
+    "obsidian": "latest",
+    "svelte": "^5.19.0",
+    "svelte-preprocess": "^6.0.3",
+    "typescript": "^5.7.3",
+    "tslib": "^2.8.1"
+  }
+}

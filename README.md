@@ -355,58 +355,57 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 ### 第一阶段：项目骨架与基础设施
 
 **1.1 项目初始化**
-- [ ] 使用 Obsidian 官方插件模板初始化项目结构
-- [ ] 配置 `tsconfig.json`：启用严格模式、ESNext target、路径别名 (`@/`)
-- [ ] 配置 `package.json`：添加 `dev`、`build`、`lint` 脚本
-- [ ] 配置 `.gitignore`：排除 `build/`、`node_modules/`、`cache/`
-- [ ] 编写 `manifest.json`：插件 ID、名称、版本、最低 Obsidian 版本要求
-- [ ] 编写 `README.md`：项目简介、安装方法、功能预览
+- [x] 使用 Obsidian 官方插件模板初始化项目结构
+- [x] 配置 `tsconfig.json`：启用严格模式、ESNext target、路径别名 (`@/`)
+- [x] 配置 `package.json`：添加 `dev`、`build`、`lint` 脚本
+- [x] 配置 `.gitignore`：排除 `build/`、`node_modules/`、`cache/`
+- [x] 编写 `manifest.json`：插件 ID、名称、版本、最低 Obsidian 版本要求
 
 **1.2 构建系统 (`esbuild.config.mjs`)**
-- [ ] 配置 esbuild 基础 TypeScript → JS 编译
-- [ ] 配置 Svelte 插件 (`esbuild-svelte`)：支持 `.svelte` 文件编译
-- [ ] 配置 WASM loader：`{ '.wasm': 'file' }` 确保 WASM 文件拷贝而非内联
-- [ ] 配置 CSS 合并：`styles/` 下所有 CSS 合并为 `build/styles.css`
-- [ ] 配置 Web Worker 打包：Worker 文件独立打包为单独 JS
-- [ ] 配置 `watch` 模式：开发时自动重编译
-- [ ] 配置输出到 `build/` 目录：`main.js` + `styles.css` + `manifest.json`
+- [x] 配置 esbuild 基础 TypeScript → JS 编译
+- [x] 配置 Svelte 插件 (`esbuild-svelte`)：支持 `.svelte` 文件编译
+- [x] 配置 WASM loader：`{ '.wasm': 'file' }` 确保 WASM 文件拷贝而非内联
+- [x] 配置 CSS 合并：`styles/` 下所有 CSS 合并为 `build/styles.css`
+- [x] 配置 Web Worker 打包：Worker 文件独立打包为单独 JS
+- [x] 配置 `watch` 模式：开发时自动重编译
+- [x] 配置输出到 `build/` 目录：`main.js` + `styles.css` + `manifest.json`
 
 **1.3 插件入口 (`main.ts`)**
-- [ ] 继承 `Plugin` 类，实现 `onload()` / `onunload()` 生命周期
-- [ ] 注册插件设置面板 (`addSettingTab`)
-- [ ] 注册侧边栏视图 (`registerView`)
-- [ ] 注册命令：呼出语义搜索 (`addCommand`)
-- [ ] 注册 Ribbon 图标按钮
-- [ ] 初始化事件总线 (`event-bus.ts`)
-- [ ] 初始化日志服务 (`logger.ts`)
-- [ ] 根据平台检测结果初始化平台适配模块
-- [ ] 启动索引调度器 (`index-scheduler.ts`)
-- [ ] `onunload()` 中释放 Worker 线程池、关闭 LanceDB 连接
+- [x] 继承 `Plugin` 类，实现 `onload()` / `onunload()` 生命周期
+- [x] 注册插件设置面板 (`addSettingTab`)
+- [x] 注册侧边栏视图 (`registerView`)
+- [x] 注册命令：呼出语义搜索 (`addCommand`)
+- [x] 注册 Ribbon 图标按钮
+- [x] 初始化事件总线 (`event-bus.ts`)
+- [x] 初始化日志服务 (`logger.ts`)
+- [x] 根据平台检测结果初始化平台适配模块
+- [x] 启动索引调度器 (`index-scheduler.ts`)
+- [x] `onunload()` 中释放 Worker 线程池、关闭 LanceDB 连接
 
 **1.4 跨切面服务 (`shared/`)**
-- [ ] `types.ts`：定义全局类型（`PluginSettings`、`PlatformType`、`IndexStatus`）
-- [ ] `constants.ts`：插件 ID、缓存路径、默认设置值、支持的模型列表
-- [ ] `event-bus.ts`：实现简易 EventEmitter（`on`、`off`、`emit`、`once`）
-- [ ] `event-bus.ts`：定义事件类型枚举（`file:changed`、`index:progress`、`model:ready` 等）
-- [ ] `logger.ts`：分级日志（`debug`、`info`、`warn`、`error`），生产环境关闭 debug
-- [ ] `errors.ts`：自定义错误类（`ModelLoadError`、`IndexError`、`StorageError`、`LLMError`）
+- [x] `types.ts`：定义全局类型（`PluginSettings`、`PlatformType`、`IndexStatus`）
+- [x] `constants.ts`：插件 ID、缓存路径、默认设置值、支持的模型列表
+- [x] `event-bus.ts`：实现简易 EventEmitter（`on`、`off`、`emit`、`once`）
+- [x] `event-bus.ts`：定义事件类型枚举（`file:changed`、`index:progress`、`model:ready` 等）
+- [x] `logger.ts`：分级日志（`debug`、`info`、`warn`、`error`），生产环境关闭 debug
+- [x] `errors.ts`：自定义错误类（`ModelLoadError`、`IndexError`、`StorageError`、`LLMError`）
 
 **1.5 平台检测与适配 (`infrastructure/platform/`)**
-- [ ] `platform-detect.ts`：通过 `Platform.isMobile`、`Platform.isIosApp`、`Platform.isAndroidApp` 检测平台
-- [ ] `platform-detect.ts`：导出 `getPlatform(): 'desktop' | 'android' | 'ios'` 函数
-- [ ] `desktop.ts`：注册全局快捷键 `Ctrl/Cmd+Shift+B` 呼出语义搜索
-- [ ] `desktop.ts`：实现拖拽支持（搜索结果 → 编辑器）
-- [ ] `android.ts`：注册系统返回键处理（关闭抽屉而非退出插件）
-- [ ] `android.ts`：实现后台任务分片逻辑 (`requestIdleCallback`)
-- [ ] `ios.ts`：Safe Area CSS 变量注入
-- [ ] `ios.ts`：App 进入后台时立即释放模型缓存
+- [x] `platform-detect.ts`：通过 `Platform.isMobile`、`Platform.isIosApp`、`Platform.isAndroidApp` 检测平台
+- [x] `platform-detect.ts`：导出 `getPlatform(): 'desktop' | 'android' | 'ios'` 函数
+- [x] `desktop.ts`：注册全局快捷键 `Ctrl/Cmd+Shift+B` 呼出语义搜索
+- [x] `desktop.ts`：实现拖拽支持（搜索结果 → 编辑器）
+- [x] `android.ts`：注册系统返回键处理（关闭抽屉而非退出插件）
+- [x] `android.ts`：实现后台任务分片逻辑 (`requestIdleCallback`)
+- [x] `ios.ts`：Safe Area CSS 变量注入
+- [x] `ios.ts`：App 进入后台时立即释放模型缓存
 
 **1.6 统一存储 (`infrastructure/storage/`)**
-- [ ] `vault-storage.ts`：封装 `app.vault.adapter`，提供 `readBinary()` / `writeBinary()`
-- [ ] `vault-storage.ts`：实现插件相对路径 → 完整 Vault 路径的拼接
-- [ ] `vault-storage.ts`：实现 `ensureDir()` 自动创建缺失目录
-- [ ] `vault-storage.ts`：统一错误处理（文件不存在、权限不足、磁盘空间不足）
-- [ ] 验证存储在 Desktop / Android / iOS 三端的读写一致性
+- [x] `vault-storage.ts`：封装 `app.vault.adapter`，提供 `readBinary()` / `writeBinary()`
+- [x] `vault-storage.ts`：实现插件相对路径 → 完整 Vault 路径的拼接
+- [x] `vault-storage.ts`：实现 `ensureDir()` 自动创建缺失目录
+- [x] `vault-storage.ts`：统一错误处理（文件不存在、权限不足、磁盘空间不足）
+- [x] 验证存储在 Desktop / Android / iOS 三端的读写一致性
 
 ---
 

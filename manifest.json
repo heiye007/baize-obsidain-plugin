@@ -1,0 +1,11 @@
+{
+    "id": "baize-obsidian-plugin",
+    "name": "白泽 Baize",
+    "version": "0.1.0",
+    "minAppVersion": "1.5.0",
+    "description": "灵兽白泽 — 通过语义搜索与本地 AI，打造隐私、极速、深度的个人知识助手。",
+    "author": "heiye007",
+    "authorUrl": "https://github.com/heiye007",
+    "fundingUrl": "",
+    "isDesktopOnly": false
+}
