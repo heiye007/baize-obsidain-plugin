@@ -47,11 +47,11 @@ export class IOSPlatform {
 			}
 			
 			/* 白泽移动布局自动应用 Safe Area */
-			.baize-mobile-drawer {
+			.baize-mobile-container {
 				padding-bottom: calc(var(--baize-safe-bottom) + 8px);
 			}
 			
-			.baize-mobile-drawer .baize-input-area {
+			.baize-mobile-container .baize-input-area {
 				padding-bottom: var(--baize-safe-bottom);
 			}
 		`;
@@ -97,20 +97,20 @@ export class IOSPlatform {
         style.id = "baize-ios-touch";
         style.textContent = `
 			/* iOS 触控反馈 */
-			.baize-root {
+			.baize-mobile-container {
 				-webkit-touch-callout: none;
 				-webkit-tap-highlight-color: transparent;
 			}
 			
 			/* 可交互元素按下反馈 */
-			.baize-root button:active,
-			.baize-root .baize-result-card:active {
+			.baize-mobile-container button:active,
+			.baize-mobile-container .baize-result-card:active {
 				transform: scale(0.97);
 				transition: transform 80ms ease;
 			}
 			
 			/* iOS 原生滚动惯性 */
-			.baize-root .baize-scroll-container {
+			.baize-mobile-container .baize-mobile-content {
 				-webkit-overflow-scrolling: touch;
 				overflow-y: auto;
 			}

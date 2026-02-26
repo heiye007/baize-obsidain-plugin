@@ -553,11 +553,11 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 - [x] 面板顶部显示索引状态指示器 (`StatusBar` 组件实时监听 EventBus)
 
 **4.4 移动布局 (`ui/layouts/MobileLayout.svelte`)**
-- [ ] 实现底部抽屉交互（半屏/全屏滑动手势）
-- [ ] 实现分段控件 (Segmented Control) 切换搜索/对话/联想
-- [ ] 所有交互元素锁定在屏幕下半部
-- [ ] iOS：适配 Safe Area（底部 Home Indicator 区域）
-- [ ] Android：适配系统导航栏高度
+- [x] 实现底部抽屉交互样式（Bottom Sheet 布局与弹出动画）
+- [x] 实现分段控件 (Segmented Control) 切换搜索/对话/联想
+- [x] 所有交互元素锁定在屏幕下半部（便于单手操作）
+- [x] iOS：适配 Safe Area（适配 Home Indicator 区域）
+- [x] Android：适配系统导航栏高度（通过全局变量同步）
 
 **4.5 搜索组件 (`ui/components/SearchBar.svelte`)**
 - [ ] 搜索输入框 + 搜索按钮

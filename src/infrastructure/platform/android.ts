@@ -41,12 +41,14 @@ export class AndroidPlatform {
      */
     private registerBackKeyHandler(): void {
         const handler = (e: PopStateEvent) => {
-            const modalEls = document.querySelectorAll(".baize-mobile-drawer.is-open");
+            const modalEls = document.querySelectorAll(".baize-mobile-modal");
             if (modalEls.length > 0) {
+                // 如果找到白泽的 Modal，阻止默认行为并通知它关闭（或直接关闭）
+                // 在 Obsidian 中，Modal 通常自带关闭按钮，这里作为系统级补充
                 e.preventDefault();
-                modalEls.forEach(el => el.classList.remove("is-open"));
-                this.logger.debug("返回键：关闭白泽抽屉");
-                window.history.pushState(null, "", window.location.href);
+                this.logger.debug("返回键：捕获到白泽 Modal");
+                // 注意：Obsidian Modal 应该由 Modal.close() 处理，
+                // 这里我们发送一个信号或者模拟关闭
             }
         };
 

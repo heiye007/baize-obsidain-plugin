@@ -4,13 +4,16 @@
  */
 import { App, Modal } from "obsidian";
 import { mount, unmount } from "svelte";
+import type BaizePlugin from "../../main";
 import MobileLayout from "../layouts/MobileLayout.svelte";
 
 export class BaizeModalView extends Modal {
     private component: any;
+    private plugin: BaizePlugin;
 
-    constructor(app: App) {
+    constructor(app: App, plugin: BaizePlugin) {
         super(app);
+        this.plugin = plugin;
     }
 
     onOpen() {
@@ -24,7 +27,8 @@ export class BaizeModalView extends Modal {
         this.component = mount(MobileLayout, {
             target: contentEl,
             props: {
-                app: this.app
+                app: this.app,
+                plugin: this.plugin
             }
         });
     }

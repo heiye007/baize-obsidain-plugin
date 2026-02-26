@@ -152,6 +152,13 @@ export default class BaizePlugin extends Plugin {
     // ─── 视图管理 ───
 
     async activateView(): Promise<void> {
+        // 移动端优先弹出 Modal
+        if (this.platform !== "desktop") {
+            const { BaizeModalView } = await import("./ui/views/modal-view");
+            new BaizeModalView(this.app, this).open();
+            return;
+        }
+
         const { workspace } = this.app;
 
         let leaf: WorkspaceLeaf | null = null;

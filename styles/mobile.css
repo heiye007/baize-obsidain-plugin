@@ -1,0 +1,57 @@
+/* ═══ 白泽 Baize - 移动端特有样式 ═══ */
+
+/* 移动端 Modal 容器适配 */
+.baize-mobile-modal {
+    padding: 0 !important;
+    border-radius: var(--baize-radius-lg) var(--baize-radius-lg) 0 0 !important;
+    overflow: hidden;
+}
+
+/* 强制让 Modal 底部对齐（Bottom Sheet 效果） */
+@media (max-width: 600px) {
+    .baize-mobile-modal {
+        margin-top: auto !important;
+        margin-bottom: 0 !important;
+        max-height: 85vh !important;
+        width: 100% !important;
+        animation: baize-slide-up 0.3s ease-out;
+    }
+
+    .modal-bg {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+}
+
+@keyframes baize-slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+/* Segmented Control 样式 */
+.baize-segmented-control {
+    display: flex;
+    background-color: var(--background-modifier-border);
+    border-radius: var(--baize-radius-md);
+    padding: 2px;
+    margin: var(--baize-spacing-md);
+}
+
+.baize-segmented-item {
+    flex: 1;
+    padding: 6px 0;
+    font-size: var(--baize-font-size-sm);
+    text-align: center;
+    border-radius: calc(var(--baize-radius-md) - 2px);
+    cursor: pointer;
+    transition: all var(--baize-transition-fast);
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+}
+
+.baize-segmented-item.active {
+    background-color: var(--baize-bg-primary);
+    color: var(--baize-gold);
+    box-shadow: var(--baize-shadow-sm);
+    font-weight: bold;
+}
