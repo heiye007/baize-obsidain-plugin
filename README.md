@@ -496,16 +496,16 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 - [x] 返回 `SearchResult[]` 领域对象给 UI 层
 
 **3.2 RAG 对话管线 (`application/rag-pipeline.ts`)**
-- [ ] 接收用户提问
-- [ ] 调用 `search-service` 检索 Top-K 相关片段
-- [ ] 拼接系统 Prompt（角色定义 + 回答规则 + 引用格式要求）
-- [ ] 拼接上下文 Prompt（将检索到的片段按格式注入）
-- [ ] 拼接用户 Prompt（用户原始提问）
-- [ ] 调用 `ILLMProvider.chatStream()` 获取流式回复
-- [ ] 解析回复中的引用标记，映射回原始笔记路径
-- [ ] 将流式 token 推送给 UI 层实时渲染
-- [ ] 实现对话历史管理（最近 N 轮对话作为上下文窗口）
-- [ ] 实现 Token 计数器，防止超出模型上下文窗口限制
+- [x] 接收用户提问
+- [x] 调用 `search-service` 检索 Top-K 相关片段
+- [x] 拼接系统 Prompt（角色定义 + 回答规则 + 引用格式要求）
+- [x] 拼接上下文 Prompt（将检索到的片段按格式注入）
+- [x] 拼接用户 Prompt（用户原始提问）
+- [x] 调用 `ILLMProvider.chatStream()` 获取流式回复
+- [x] 解析回复中的引用标记思路（通过 Prompt 强制输出 [^index] 格式）
+- [x] 将流式 token 推送给 UI 层实时渲染（通过 onChunk 回调）
+- [x] 实现对话历史管理（最近 N 轮对话作为上下文窗口）
+- [x] 实现 Token 计数器（简易字符启发式计数器，防止超出窗口）
 
 **3.3 LLM 客户端 (`infrastructure/models/llm-clients/`)**
 - [ ] `deepseek.ts`：实现 `ILLMProvider` 接口，接入 DeepSeek API
