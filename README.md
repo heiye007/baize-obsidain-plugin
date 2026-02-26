@@ -508,17 +508,17 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 - [x] 实现 Token 计数器（简易字符启发式计数器，防止超出窗口）
 
 **3.3 LLM 客户端 (`infrastructure/models/llm-clients/`)**
-- [ ] `deepseek.ts`：实现 `ILLMProvider` 接口，接入 DeepSeek API
-- [ ] `deepseek.ts`：支持流式响应 (SSE)
-- [ ] `openai.ts`：实现 `ILLMProvider` 接口，接入 OpenAI API
-- [ ] `openai.ts`：支持流式响应 (SSE)
-- [ ] `openai.ts`：兼容 OpenAI 格式的第三方 API（自定义 Base URL）
-- [ ] `ollama.ts`：实现 `ILLMProvider` 接口，接入本地 Ollama
-- [ ] `ollama.ts`：支持流式响应
-- [ ] `ollama.ts`：自动检测本地 Ollama 服务是否可用
-- [ ] 所有客户端实现 `testConnection()` 连接测试方法
-- [ ] 所有客户端实现请求超时处理（默认 30s）
-- [ ] 所有客户端实现错误重试（网络错误重试 2 次）
+- [x] `deepseek.ts`：实现 `ILLMProvider` 接口，接入 DeepSeek API
+- [x] `deepseek.ts`：支持流式响应 (SSE)
+- [x] `openai.ts`：实现 `ILLMProvider` 接口，接入 OpenAI API
+- [x] `openai.ts`：支持流式响应 (SSE)
+- [x] `openai.ts`：兼容 OpenAI 格式的第三方 API（自定义 Base URL）
+- [x] `ollama.ts`：实现 `ILLMProvider` 接口，接入本地 Ollama
+- [x] `ollama.ts`：支持流式响应
+- [x] `ollama.ts`：自动检测本地 Ollama 服务是否可用
+- [x] 所有客户端实现 `testConnection()` 连接测试方法
+- [x] 所有客户端实现请求超时处理（默认 30s）
+- [x] 所有客户端实现错误重试（网络错误重试 2 次）
 
 **3.4 知识联想服务 (`application/insight-service.ts`)**
 - [ ] 监听 Obsidian 活动笔记切换事件 (`active-leaf-change`)
