@@ -424,64 +424,63 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 
 **2.2 领域接口 (`domain/interfaces/`)**
 - [x] `vector-store.ts`：定义 `IVectorStore` 接口（`init`、`upsert`、`delete`、`search`、`getStats`、`close`）
-- [ ] `embedder.ts`：定义 `IEmbedder` 接口（`loadModel`、`embed(text): Promise<Float32Array>`、`embedBatch`、`unloadModel`）
-- [ ] `llm-provider.ts`：定义 `ILLMProvider` 接口（`chat`、`chatStream`、`getModels`、`testConnection`）
+- [x] `embedder.ts`：定义 `IEmbedder` 接口（`loadModel`、`embed(text): Promise<Float32Array>`、`embedBatch`、`unloadModel`）
+- [x] `llm-provider.ts`：定义 `ILLMProvider` 接口（`chat`、`chatStream`、`getModels`、`testConnection`）
 
 **2.3 领域数据模型 (`domain/models/`)**
-- [ ] `document-chunk.ts`：定义 `DocumentChunk`（`filePath`、`chunkIndex`、`text`、`heading`、`startLine`、`endLine`）
-- [ ] `search-result.ts`：定义 `SearchResult`（`chunk`、`score`、`highlights`）
+- [x] `baize-file.ts`：定义文件聚合根，包含文件元数据、索引状态管理及分块集合
+- [x] `baize-chunk.ts`：定义分块模型，包含文本内容、位置信息（行号/偏移量）及元数据引用
 
 **2.4 文本分块 (`domain/chunking/`)**
-- [ ] `strategies.ts`：定义分块策略枚举（`FIXED_LENGTH`、`HEADING_SPLIT`、`SEMANTIC_PARAGRAPH`）
-- [ ] `markdown-chunker.ts`：实现 Markdown 标题级别感知分块（按 `#`、`##`、`###` 切分）
-- [ ] `markdown-chunker.ts`：处理代码块不被拆分（检测 ``` 边界）
-- [ ] `markdown-chunker.ts`：处理列表项分组（同层级列表保持在一个块内）
-- [ ] `markdown-chunker.ts`：实现固定长度分块（在句子边界处切分，避免断句）
-- [ ] `markdown-chunker.ts`：实现块大小限制（最大 512 tokens / 最小 50 tokens）
-- [ ] `markdown-chunker.ts`：实现块间重叠（overlap 20% 保持上下文连续性）
-- [ ] `markdown-chunker.ts`：保留每个块的元数据（来源标题层级、起止行号）
-- [ ] `markdown-chunker.ts`：忽略 YAML frontmatter 区域（`---` 包裹的头部元数据）
-- [ ] `markdown-chunker.ts`：处理嵌入式内容（`![[embed]]` 引用暂跳过，不递归展开）
+- [x] `strategies.ts`：定义分块策略枚举（`FIXED_LENGTH`、`HEADING_SPLIT`、`HYBRID`）
+- [x] `markdown-chunker.ts`：实现 Markdown 标题级别感知分块（按 `#`、`##`、`###` 切分）
+- [x] `markdown-chunker.ts`：处理代码块不被拆分（检测 ``` 边界）
+- [x] `markdown-chunker.ts`：实现固定长度与混合分块（在句子/换行边界处优化切分）
+- [x] `markdown-chunker.ts`：实现块大小限制与重叠度 (Overlap 15%)
+- [x] `markdown-chunker.ts`：保留分块元数据（标题路径、起止行号、字符偏移量）
+- [x] `markdown-chunker.ts`：自动忽略 YAML frontmatter 区域
+- [x] 实现中文分块优化（支持 。！？ 等中文标点作为断句依据）
 
 **2.5 Web Worker 通信 (`infrastructure/workers/`)**
-- [ ] `embedding.worker.ts`：Worker 内部初始化 `transformers.js` pipeline
-- [ ] `embedding.worker.ts`：监听 `postMessage` 接收文本分块数据
-- [ ] `embedding.worker.ts`：执行模型推理，通过 `postMessage` 返回 `Float32Array` 向量
-- [ ] `embedding.worker.ts`：支持批量推理（一次接收多个文本，批量返回向量）
-- [ ] `embedding.worker.ts`：实现模型加载进度回报（`model:loading` 事件 + 百分比）
-- [ ] `embedding.worker.ts`：实现 Worker 内错误捕获与回传
-- [ ] `worker-pool.ts`：实现线程池管理器（桌面端 2-4 Worker，移动端 1 Worker）
-- [ ] `worker-pool.ts`：实现任务队列（FIFO，待处理任务排队）
-- [ ] `worker-pool.ts`：实现 `submit(task): Promise<result>` 提交任务接口
-- [ ] `worker-pool.ts`：实现空闲 Worker 自动分配与回收
-- [ ] `worker-pool.ts`：实现 `terminate()` 安全销毁所有 Worker
+- [x] `embedding.worker.ts`：Worker 内部初始化 `transformers.js` pipeline
+- [x] `embedding.worker.ts`：监听 `postMessage` 接收文本分块数据
+- [x] `embedding.worker.ts`：执行模型推理，通过 `postMessage` 返回 `Float32Array` 向量
+- [x] `embedding.worker.ts`：支持批量推理（一次接收多个文本，批量返回向量）
+- [x] `embedding.worker.ts`：实现模型加载进度回报（`model:loading` 事件 + 百分比）
+- [x] `embedding.worker.ts`：实现 Worker 内错误捕获与回传
+- [x] `worker-pool.ts`：实现线程池管理器（桌面端 2-4 Worker，移动端 1 Worker）
+- [x] `worker-pool.ts`：实现任务队列（FIFO，待处理任务排队）
+- [x] `worker-pool.ts`：实现 `submit(task): Promise<result>` 提交任务接口
+- [x] `worker-pool.ts`：实现空闲 Worker 自动分配与回收
+- [x] `worker-pool.ts`：实现 `terminate()` 安全销毁所有 Worker
 
 **2.6 模型管理 (`infrastructure/models/`)**
-- [ ] `model-manager.ts`：根据平台选择模型精度（Desktop → FP16，Android/iOS → Q4）
-- [ ] `model-manager.ts`：检查本地缓存是否已有模型文件
-- [ ] `model-manager.ts`：从 HuggingFace CDN 下载模型权重（带进度回调）
-- [ ] `model-manager.ts`：下载失败重试机制（最多 3 次，指数退避）
-- [ ] `model-manager.ts`：支持用户手动导入模型文件（离线场景）
-- [ ] `model-manager.ts`：模型缓存路径管理（`.obsidian/plugins/baize-obsidian-plugin/cache/`）
-- [ ] `model-manager.ts`：实现 `getModelPath()` 返回当前平台对应的模型路径
-- [ ] `model-manager.ts`：实现 `clearCache()` 清除已下载的模型文件
-- [ ] `onnx-embedder.ts`：封装 `transformers.js` 的 `pipeline('feature-extraction', model)` 调用
-- [ ] `onnx-embedder.ts`：实现 `IEmbedder` 接口
-- [ ] `onnx-embedder.ts`：实现向量归一化（L2 norm）
+- [x] `model-manager.ts`：定义模型元数据与描述，支持模型列表获取
+- [x] `model-manager.ts`：实现平台敏感的模型推荐逻辑（Mobile 优先量化模型）
+- [x] `model-manager.ts`：实现 `isCached()` 检查本地模型文件夹是否存在
+- [x] `model-manager.ts`：从 HuggingFace CDN 下载模型权重（带进度回调与重试）
+- [x] `model-manager.ts`：下载失败重试机制（最多 3 次，指数退避）
+- [x] `model-manager.ts`：支持用户手动导入模型文件（离线场景）
+- [x] `model-manager.ts`：模型缓存路径管理（`.obsidian/plugins/baize-obsidian-plugin/models/`）
+- [x] `model-manager.ts`：实现 `getModelPath()` 返回当前运行所需的真实路径
+- [x] `model-manager.ts`：实现 `clearCache()` 调用 Storage 彻底清理缓存
+- [x] `onnx-embedder.ts`：基于 Web Worker 线程池封装 `transformers.js`
+- [x] `onnx-embedder.ts`：实现 `IEmbedder` 领域接口
+- [x] `onnx-embedder.ts`：实现向量归一化（L2 norm，已在 Worker 中集成）
 
 **2.7 索引调度 (`application/`)**
-- [ ] `sync-service.ts`：注册 Obsidian Vault 事件监听（`create`、`modify`、`delete`、`rename`）
-- [ ] `sync-service.ts`：文件变更防抖（500ms 内多次修改合并为一次索引任务）
-- [ ] `sync-service.ts`：过滤非 Markdown 文件（忽略图片、PDF、附件等）
-- [ ] `sync-service.ts`：过滤用户排除的目录/文件（基于设置的 `excludePaths`）
-- [ ] `sync-service.ts`：通过事件总线发射 `file:changed` 事件
-- [ ] `index-scheduler.ts`：监听 `file:changed` 事件，调度增量索引任务
-- [ ] `index-scheduler.ts`：实现全量扫描逻辑（首次启动或用户手动触发时）
-- [ ] `index-scheduler.ts`：全量扫描进度通知（`index:progress` 事件 + 已处理/总数）
-- [ ] `index-scheduler.ts`：实现增量索引逻辑（仅处理变更的文件）
-- [ ] `index-scheduler.ts`：并发控制（通过 Worker Pool 限制同时处理的文件数）
-- [ ] `index-scheduler.ts`：移动端功耗模式感知（充电模式/手动模式判断）
-- [ ] `index-scheduler.ts`：索引完成后发射 `index:complete` 事件
+- [x] `sync-service.ts`：注册 Obsidian Vault 事件监听（`create`、`modify`、`delete`、`rename`）
+- [x] `sync-service.ts`：文件变更防抖（500ms 内多次修改合并为一次索引任务）
+- [x] `sync-service.ts`：过滤非 Markdown 文件（忽略图片、PDF、附件等）
+- [x] `sync-service.ts`：过滤用户排除的目录/文件（基于设置的 `excludePaths`）
+- [x] `sync-service.ts`：通过事件总线发射 `file:changed` 事件
+- [x] `index-scheduler.ts`：监听 `file:changed` 事件，调度增量索引任务
+- [x] `index-scheduler.ts`：实现全量扫描逻辑（首次启动或用户手动触发时）
+- [x] `index-scheduler.ts`：全量扫描进度通知（`index:progress` 事件 + 已处理/总数）
+- [x] `index-scheduler.ts`：实现增量索引逻辑（仅处理变更的文件）
+- [x] `index-scheduler.ts`：并发控制（通过 Worker Pool 队列实现）
+- [x] `index-scheduler.ts`：移动端功耗模式感知（初步通过 isMobile 策略实现）
+- [x] `index-scheduler.ts`：索引完成后发射 `index:complete` 事件
 
 ---
 

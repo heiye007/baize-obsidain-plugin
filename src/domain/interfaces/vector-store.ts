@@ -6,7 +6,8 @@
  * 
  * 遵循依赖倒置原则：Domain 层定义接口，Infrastructure 层实现接口
  */
-import type { VectorRecord, SearchResult, IndexStats } from "../../infrastructure/database/schema";
+import type { VectorRecord, IndexStats } from "../../infrastructure/database/schema";
+import type { SearchResult } from "../models/search-result";
 
 export interface IVectorStore {
     /** 初始化数据库连接，创建或打开表 */

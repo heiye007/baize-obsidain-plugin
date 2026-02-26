@@ -13,9 +13,10 @@
 import type { IVectorStore } from "../../domain/interfaces/vector-store";
 import type {
     VectorRecord,
-    SearchResult,
     IndexStats,
 } from "./schema";
+import type { SearchResult } from "../../domain/models/search-result";
+import type { BaizeChunk } from "../../domain/models/baize-chunk";
 import { LANCE_TABLE_NAME, MODEL_DIMENSIONS } from "./schema";
 import type { Logger } from "../../shared/logger";
 import { StorageError } from "../../shared/errors";
@@ -171,17 +172,20 @@ export class LanceAdapter implements IVectorStore {
                     const score = 1 - (row._distance ?? 1);
 
                     return {
-                        record: {
-                            id: row.id,
-                            file_path: row.file_path,
-                            chunk_index: row.chunk_index,
+                        chunk: {
+                            index: row.chunk_index,
                             text: row.text,
-                            vector: row.vector,
+                            vectorId: row.id,
                             metadata: typeof row.metadata === "string"
                                 ? JSON.parse(row.metadata)
                                 : row.metadata,
-                            updated_at: row.updated_at,
-                        } as VectorRecord,
+                            // 这些字段在 VectorRecord 中可能没有直接存储（如 offset/line），
+                            // 如果需要，会在后续阶段完善存储结构
+                            offsetStart: 0,
+                            offsetEnd: 0,
+                            lineStart: 0,
+                            lineEnd: 0,
+                        } as BaizeChunk,
                         score,
                         distance: row._distance,
                     };

@@ -47,17 +47,6 @@ export interface ChunkMetadata {
     file_mtime: number;
 }
 
-/** 搜索结果 */
-export interface SearchResult {
-    /** 匹配的向量记录 */
-    record: VectorRecord;
-
-    /** 相似度分数 (0.0 ~ 1.0，越高越相似) */
-    score: number;
-
-    /** 距离（L2 或 cosine 距离，越小越相似） */
-    distance: number;
-}
 
 /** 索引统计信息 */
 export interface IndexStats {
