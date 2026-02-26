@@ -487,13 +487,13 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 ### 第三阶段：搜索、RAG 与知识联想
 
 **3.1 语义搜索服务 (`application/search-service.ts`)**
-- [ ] 接收用户查询文本
-- [ ] 调用 Worker Pool 将查询文本向量化
-- [ ] 调用 `lance-adapter.search()` 执行 Top-K ANN 搜索
-- [ ] 对搜索结果按相似度分数排序
-- [ ] 过滤低于阈值（如 < 0.3）的结果
-- [ ] 对结果文本进行关键词高亮处理
-- [ ] 返回 `SearchResult[]` 给 UI 层
+- [x] 接收用户查询文本
+- [x] 调用 Worker Pool 将查询文本向量化
+- [x] 调用 `lance-adapter.search()` 执行 Top-K ANN 搜索
+- [x] 对搜索结果按相似度分数排序
+- [x] 过滤低于阈值（如 < 0.3）的结果
+- [x] 对结果文本进行关键词高亮处理（辅助 UI 显示）
+- [x] 返回 `SearchResult[]` 领域对象给 UI 层
 
 **3.2 RAG 对话管线 (`application/rag-pipeline.ts`)**
 - [ ] 接收用户提问
