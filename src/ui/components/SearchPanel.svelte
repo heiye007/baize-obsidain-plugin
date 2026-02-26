@@ -1,6 +1,8 @@
 <script lang="ts">
     import type BaizePlugin from "../../main";
+    import type { SearchResult } from "../../domain/models/search-result";
     import SearchBar from "./SearchBar.svelte";
+    import ResultCard from "./ResultCard.svelte";
 
     interface Props {
         plugin: BaizePlugin;
@@ -9,7 +11,7 @@
     let { plugin }: Props = $props();
 
     let isSearching = $state(false);
-    let results: any[] = $state([]);
+    let results: SearchResult[] = $state([]);
     let hasSearched = $state(false);
 
     async function handleSearch(query: string) {
@@ -39,6 +41,13 @@
                 </div>
                 <p>正在搜索知识库...</p>
             </div>
+        {:else if hasSearched && results.length > 0}
+            <div class="results-count">
+                找到 {results.length} 条相关结果
+            </div>
+            {#each results as result (result.chunk.vectorId)}
+                <ResultCard {result} app={plugin.app} />
+            {/each}
         {:else if hasSearched && results.length === 0}
             <div class="results-empty">
                 <p>没有找到相关笔记</p>
@@ -79,6 +88,12 @@
         font-size: var(--baize-font-size-xs);
         color: var(--text-faint);
         margin-top: 4px;
+    }
+
+    .results-count {
+        font-size: var(--baize-font-size-xs);
+        color: var(--text-muted);
+        padding: var(--baize-spacing-xs) 0 var(--baize-spacing-sm);
     }
 
     /* 三点加载动画 */
