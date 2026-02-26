@@ -37,12 +37,6 @@ export class SearchService {
         this.logger = logger;
     }
 
-    /**
-     * 执行语义搜索
-     * 
-     * @param query - 用户输入的自然语言文本
-     * @param options - 搜索选项
-     */
     async search(query: string, options: SearchOptions = {}): Promise<SearchResult[]> {
         const {
             topK = 10,
@@ -64,23 +58,31 @@ export class SearchService {
             this.logger.debug(`[Search] Vectorizing query: "${query}"`);
             const queryVector = await this.embedder.embed(query);
 
-            // 3. 执行向量检索 (LanceDB)
-            // LanceAdapter.search 内部已经处理了排序 (默认升序距离，即降序相似度)
-            let results = await this.db.search(queryVector, topK, minScore);
+            // 3. 执行搜索并处理结果
+            let results = await this.searchByVector(queryVector, topK, minScore);
 
-            // 4. 再次确保按分数降序排列
-            results = results.sort((a, b) => b.score - a.score);
-
-            // 5. 关键词高亮演示（语义搜索中通常是模糊匹配，这里进行简单的词汇匹配）
+            // 4. 高亮处理
             if (includeHighlights) {
                 results = this.applyHighlights(query, results);
             }
 
-            this.logger.info(`[Search] Found ${results.length} results for: "${query}"`);
             return results;
 
         } catch (err) {
             this.logger.error(`[Search] Semantic search failed:`, err);
+            throw err;
+        }
+    }
+
+    /**
+     * 直接通过向量执行搜索
+     */
+    async searchByVector(vector: number[], topK: number = 10, minScore: number = 0.3): Promise<SearchResult[]> {
+        try {
+            let results = await this.db.search(vector, topK, minScore);
+            return results.sort((a, b) => b.score - a.score);
+        } catch (err) {
+            this.logger.error(`[Search] Search by vector failed:`, err);
             throw err;
         }
     }

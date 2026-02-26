@@ -521,13 +521,13 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 - [x] 所有客户端实现错误重试（网络错误重试 2 次）
 
 **3.4 知识联想服务 (`application/insight-service.ts`)**
-- [ ] 监听 Obsidian 活动笔记切换事件 (`active-leaf-change`)
-- [ ] 获取当前笔记全文内容
-- [ ] 对当前笔记内容进行分块并取平均向量
-- [ ] 调用 `lance-adapter.search()` 搜索最相关的其它笔记片段（排除当前笔记自身）
-- [ ] 防抖处理（用户快速切换笔记时，取消之前的搜索）
-- [ ] 缓存最近 N 篇笔记的联想结果，避免重复计算
-- [ ] 通过事件总线推送 `insight:updated` 事件给 UI 层
+- [x] 监听 Obsidian 活动笔记切换事件 (`active-leaf-change`)
+- [x] 获取当前笔记全文内容
+- [x] 对当前笔记内容进行分块并通过 `SearchService.searchByVector` 获取语义特征
+- [x] 调用 `lance-adapter.search()` 搜索最相关的其它笔记片段（排除当前笔记自身）
+- [x] 防抖处理（用户快速切换笔记时，延迟 800ms 执行联想任务）
+- [x] 缓存最近 N 篇笔记的联想结果，采用 LRU 策略
+- [x] 通过事件总线推送 `insight:updated` 事件给 UI 层
 
 ---
 
