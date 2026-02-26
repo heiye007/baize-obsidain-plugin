@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baize Mobile UI Mockup</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #05070a;
+            --card-bg: rgba(30, 32, 40, 0.95);
+            --accent-gold: #d4ae6e;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a8;
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --ink-gradient: linear-gradient(180deg, #101217 0%, #05070a 100%);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Phone Frame */
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background: var(--ink-gradient);
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 8px solid #222;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Status Bar Mockup */
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Obsidian Title Bar */
+        .obsidian-header {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .header-title {
+            font-size: 16px;
+            color: var(--text-secondary);
+        }
+
+        /* Mock Editor */
+        .mock-editor {
+            flex: 1;
+            padding: 20px;
+            background: var(--bg-deep);
+            color: var(--text-secondary);
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .mock-editor p {
+            opacity: 0.3;
+        }
+
+        /* Baize Bottom Sheet (Mobile Dialog) */
+        .bottom-sheet {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 65%;
+            background: var(--card-bg);
+            border-top: 1px solid var(--glass-border);
+            border-radius: 30px 30px 0 0;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .drag-handle {
+            width: 50px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 12px auto;
+        }
+
+        .sheet-header {
+            padding: 0 24px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-mobile {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 20px;
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+        }
+
+        /* Cards List */
+        .cards-list {
+            flex: 1;
+            padding: 0 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 16px;
+            transition: transform 0.2s;
+        }
+
+        .insight-card:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .card-meta {
+            font-size: 11px;
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .card-content {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        /* Mobile Tabs */
+        .mobile-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            margin: 0 20px 15px;
+            padding: 4px;
+            border-radius: 12px;
+            gap: 4px;
+        }
+
+        .m-tab {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            font-size: 11px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .m-tab.active {
+            background: var(--accent-gold);
+            color: #000;
+            font-weight: 600;
+        }
+
+        .mobile-panel {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .mobile-panel.active {
+            display: flex;
+        }
+
+        /* Chat Specific Mobile */
+        .m-chat-list {
+            flex: 1;
+            padding: 0 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .m-msg {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .m-msg.ai {
+            background: rgba(255, 255, 255, 0.05);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .m-msg.user {
+            background: var(--accent-gold);
+            color: #000;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        /* Bottom Input Strip */
+        .bottom-input-strip {
+            padding: 10px 20px 30px;
+            background: rgba(30, 32, 40, 0.98);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .input-wrapper {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 25px;
+            padding: 6px 6px 6px 20px;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .send-circle {
+            width: 34px;
+            height: 34px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .icon {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="phone-container">
+        <!-- Status Bar Mock -->
+        <div class="status-bar">
+            <span>14:55</span>
+            <div style="display:flex; gap: 5px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2v-2zm0-10h2v8h-2V6z" />
+                </svg>
+                <div
+                    style="width: 25px; height: 12px; border: 1.5px solid #fff; border-radius: 3px; position:relative; margin-top:5px;">
+                    <div style="width: 15px; height: 100%; background: #fff;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="obsidian-header">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12h18M3 6h18M3 18h18" />
+            </svg>
+            <span class="header-title">白泽设计方案.md</span>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="1" />
+                <circle cx="12" cy="5" r="1" />
+                <circle cx="12" cy="19" r="1" />
+            </svg>
+        </div>
+
+        <div class="mock-editor">
+            <p>目前 Obsidian 的移动端用户增长非常迅速。我们需要考虑到手机端的使用场景不仅是“查看”，还有“灵感记录”。</p>
+            <p>白泽的核心在于它能在您打字时即时提供跨文档的联想能力...</p>
+        </div>
+
+        <!-- Baize Mobile UI -->
+        <div class="bottom-sheet" id="bottom-sheet">
+            <div class="drag-handle" id="drag-handle"></div>
+
+            <!-- Mobile Tabs -->
+            <div class="mobile-tabs">
+                <div class="m-tab active" onclick="switchMobileTab('chat')">对话</div>
+                <div class="m-tab" onclick="switchMobileTab('search')">搜索</div>
+                <div class="m-tab" onclick="switchMobileTab('insight')">联想</div>
+            </div>
+
+            <!-- Panel: Chat -->
+            <div id="m-panel-chat" class="mobile-panel active">
+                <div class="m-chat-list" id="m-chat-list">
+                    <div class="m-msg ai">主公，随时待命。</div>
+                </div>
+                <div class="bottom-input-strip">
+                    <div class="input-wrapper">
+                        <input type="text" id="m-input" placeholder="输入您的问题...">
+                        <div class="send-circle" id="m-send">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel: Search -->
+            <div id="m-panel-search" class="mobile-panel">
+                <div style="padding: 15px 20px 0;">
+                    <div class="input-wrapper" style="background: rgba(255,255,255,0.05);">
+                        <input type="text" placeholder="搜索知识库...">
+                    </div>
+                </div>
+                <div class="cards-list" style="margin-top: 15px;">
+                    <div class="insight-card" onclick="selectCard(this)">
+                        <div class="card-meta">📁 搜索结果 / 98% 匹配</div>
+                        <div class="card-content">关于“白泽”的历史文献综述...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel: Insight -->
+            <div id="m-panel-insight" class="mobile-panel">
+                <div class="cards-list">
+                    <div class="insight-card" onclick="selectCard(this)">
+                        <div class="card-meta">💡 自动联想</div>
+                        <div class="card-content">根据当前段落，您可能想引用《瑞兽考》中的第三章内容。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sheet = document.getElementById('bottom-sheet');
+        const dragHandle = document.getElementById('drag-handle');
+        const chatList = document.getElementById('m-chat-list');
+        const input = document.getElementById('m-input');
+        const sendBtn = document.getElementById('m-send');
+
+        let isExpanded = true;
+
+        dragHandle.onclick = () => {
+            isExpanded = !isExpanded;
+            sheet.style.transition = 'transform 0.4s cubic-bezier(0.19, 1, 0.22, 1)';
+            sheet.style.transform = isExpanded ? 'translateY(0)' : 'translateY(85%)';
+        };
+
+        function switchMobileTab(tabId) {
+            document.querySelectorAll('.m-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.mobile-panel').forEach(p => p.classList.remove('active'));
+
+            event.currentTarget.classList.add('active');
+            document.getElementById(`m-panel-${tabId}`).classList.add('active');
+        }
+
+        function selectCard(el) {
+            el.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                el.style.transform = 'scale(1)';
+                alert('已复制相关内容！');
+            }, 100);
+        }
+
+        sendBtn.onclick = () => {
+            if (!input.value) return;
+            const userMsg = document.createElement('div');
+            userMsg.className = 'm-msg user';
+            userMsg.textContent = input.value;
+            chatList.appendChild(userMsg);
+
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'm-msg ai';
+            aiMsg.textContent = '白泽收到，正在查阅灵海...';
+            chatList.appendChild(aiMsg);
+
+            input.value = '';
+            chatList.scrollTop = chatList.scrollHeight;
+
+            setTimeout(() => {
+                aiMsg.textContent = '根据您的提问，我在您的知识库中定位到了 3 处相关内容，已为您生成摘要。';
+            }, 1000);
+        };
+    </script>
+</body>
+
+</html>

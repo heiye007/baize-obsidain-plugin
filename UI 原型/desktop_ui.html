@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baize Desktop UI Mockup</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f1115;
+            --panel-bg: rgba(26, 29, 36, 0.8);
+            --accent-gold: #c6a667;
+            --text-main: #e0e0e0;
+            --text-dim: #9ca3af;
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --ink-gradient: linear-gradient(135deg, #1a1d24 0%, #0f1115 100%);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Mock Obsidian Interface */
+        .workspace {
+            display: flex;
+            width: 100%;
+        }
+
+        .main-editor {
+            flex: 1;
+            padding: 60px 10%;
+            border-right: 1px solid var(--glass-border);
+            opacity: 0.5;
+            /* Dimmed to highlight the Baize panel */
+        }
+
+        .editor-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 32px;
+            margin-bottom: 24px;
+        }
+
+        .editor-content {
+            line-height: 1.8;
+            font-size: 16px;
+            color: var(--text-dim);
+        }
+
+        /* Baize Side Panel */
+        .baize-sidebar {
+            width: 380px;
+            background: var(--ink-gradient);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--glass-border);
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .baize-header {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .baize-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-gold);
+            border-radius: 8px;
+            mask: url('https://api.iconify.design/ri:cloud-windy-line.svg') no-repeat center;
+            -webkit-mask: url('https://api.iconify.design/ri:cloud-windy-line.svg') no-repeat center;
+        }
+
+        .brand-name {
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--accent-gold);
+            letter-spacing: 1px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #4ade80;
+        }
+
+        /* Chat Area */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .message {
+            max-width: 90%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.ai {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            align-self: flex-start;
+        }
+
+        .message.user {
+            background: var(--accent-gold);
+            color: #000;
+            font-weight: 500;
+            align-self: flex-end;
+        }
+
+        .reference-card {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(198, 166, 103, 0.1);
+            border-left: 2px solid var(--accent-gold);
+            font-size: 12px;
+            color: var(--accent-gold);
+            cursor: move;
+            /* Drag and drop hint */
+            transition: all 0.2s;
+        }
+
+        .reference-card:hover {
+            background: rgba(198, 166, 103, 0.2);
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 24px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .search-box {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 8px 12px;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(198, 166, 103, 0.2);
+        }
+
+        textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: inherit;
+            resize: none;
+            outline: none;
+            height: 40px;
+            font-size: 14px;
+        }
+
+        .input-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            align-items: center;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        .send-btn {
+            background: none;
+            border: none;
+            color: var(--accent-gold);
+            cursor: pointer;
+            padding: 4px;
+            transition: transform 0.2s;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Tab Bar */
+        .tab-bar {
+            display: flex;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px;
+            margin: 0 16px 16px;
+            border-radius: 8px;
+            gap: 4px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tab.active {
+            background: var(--accent-gold);
+            color: #000;
+            font-weight: 600;
+        }
+
+        /* View Panels */
+        .view-panel {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .view-panel.active {
+            display: flex;
+        }
+
+        /* Search Gallery */
+        .search-gallery {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .search-item {
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-item:hover {
+            border-color: var(--accent-gold);
+            background: rgba(198, 166, 103, 0.05);
+        }
+
+        .search-item .meta {
+            font-size: 10px;
+            color: var(--accent-gold);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Insight View (Automatic) */
+        .insight-view {
+            padding: 20px;
+            color: var(--text-dim);
+        }
+
+        .insight-title {
+            font-size: 12px;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 8px;
+        }
+
+        .insight-card {
+            background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.05), transparent);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="workspace">
+        <div class="main-editor">
+            <h1 class="editor-title">关于灵兽白泽的研究笔记</h1>
+            <p class="editor-content">
+                据《云笈七签》卷一百引《轩辕本纪》：黄帝巡狩，至东滨海，得神兽，能言，达于万物之情。以此问若。
+                天下神鬼之事，自古精气为物、游魂为变者凡一万一千五百二十种。白泽言之，帝令以图写之，以示天下。
+            </p>
+        </div>
+
+        <div class="baize-sidebar">
+            <div class="baize-header">
+                <div class="brand">
+                    <div class="baize-logo"></div>
+                    <span class="brand-name">白泽 BA I Z E</span>
+                </div>
+                <div class="status-dot"></div>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="tab-bar">
+                <div class="tab active" onclick="switchTab('chat')">瑞兽对话</div>
+                <div class="tab" onclick="switchTab('search')">语义搜索</div>
+                <div class="tab" onclick="switchTab('insight')">灵感联想</div>
+            </div>
+
+            <!-- Mode: Chat -->
+            <div id="panel-chat" class="view-panel active">
+                <div class="chat-container">
+                    <!-- Messages will appear here -->
+                </div>
+                <div class="input-area">
+                    <div class="search-box">
+                        <textarea id="baize-input" placeholder="问问白泽..."></textarea>
+                        <div class="input-actions">
+                            <span id="status-text" class="hint">LanceDB WASM 已就绪</span>
+                            <button class="send-btn" id="send-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mode: Search -->
+            <div id="panel-search" class="view-panel">
+                <div class="search-gallery">
+                    <div class="search-item">
+                        <div class="meta"><span>相关度 98%</span> <span>2024-02-26</span></div>
+                        <div style="font-size: 14px; margin-bottom: 5px;">白泽精怪图.md</div>
+                        <div class="snippet">记载了一万一千五百二十种精怪的形象与避邪之法...</div>
+                    </div>
+                    <div class="search-item">
+                        <div class="meta"><span>相关度 85%</span> <span>2024-01-15</span></div>
+                        <div style="font-size: 14px; margin-bottom: 5px;">山海经·大荒经.md</div>
+                        <div class="snippet">东海中有兽，名曰白泽，能言，达于万物之情...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mode: Insight -->
+            <div id="panel-insight" class="view-panel">
+                <div class="insight-view">
+                    <div class="insight-title">基于当前笔记的深度联想</div>
+                    <div class="insight-card">
+                        <b>发现潜在联系：</b>
+                        <p style="margin-top:8px;">您正在记录“黄帝巡狩”，白泽与“黄帝”的第一次互动发生在东海之滨。建议参考：<a href="#"
+                                style="color:var(--accent-gold);">黄帝内经·起源.md</a></p>
+                    </div>
+                    <div class="insight-card">
+                        <b>知识挖掘：</b>
+                        <p style="margin-top:8px;">您的库中关于“辟邪符咒”的内容与“精怪图”有 70% 的语义重合。是否需要建立双向链接？</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('baize-input');
+        const sendBtn = document.getElementById('send-btn');
+        const chatContainer = document.querySelector('.chat-container');
+        const statusText = document.getElementById('status-text');
+        const editorContent = document.querySelector('.editor-content');
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+
+            event.currentTarget.classList.add('active');
+            document.getElementById(`panel-${tabId}`).classList.add('active');
+        }
+
+        function addMessage(text, isAi = false, ref = null) {
+            const msg = document.createElement('div');
+            msg.className = `message ${isAi ? 'ai' : 'user'}`;
+            msg.innerHTML = text;
+
+            if (ref) {
+                const card = document.createElement('div');
+                card.className = 'reference-card';
+                card.textContent = `📄 引用: ${ref}`;
+                card.onclick = () => {
+                    const toast = document.createElement('div');
+                    toast.style.cssText = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--accent-gold); color:#000; padding:10px 20px; border-radius:5px; z-index:100;';
+                    toast.textContent = '已插入到编辑器光标处 (模拟)';
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 2000);
+                    editorContent.innerHTML += `<br><br><i>[由白泽引用的补充]: 从 "${ref}" 中提取的相关知识已合入。</i>`;
+                };
+                msg.appendChild(card);
+            }
+
+            chatContainer.appendChild(msg);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        async function handleSend() {
+            const text = input.value.trim();
+            if (!text) return;
+            addMessage(text, false);
+            input.value = '';
+            statusText.textContent = '白泽正于灵海检索...';
+            statusText.style.color = 'var(--accent-gold)';
+            setTimeout(() => {
+                statusText.textContent = 'LanceDB WASM 已就绪';
+                statusText.style.color = 'var(--text-dim)';
+                addMessage('主公，根据检索，白泽不仅通晓万物，其图谱在后世更是演变为一种特殊的知识分类体系。', true, '修心/分类学.md');
+            }, 1200);
+        }
+
+        sendBtn.onclick = handleSend;
+        input.onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } };
+
+        addMessage('主公，白泽已归位。当前笔记《关于灵兽白泽的研究笔记》已被索引，我会为您持续监测关联。', true);
+    </script>
+</body>
+
+</html>
