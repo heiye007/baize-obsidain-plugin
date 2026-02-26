@@ -412,18 +412,18 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 ### 第二阶段：向量数据库与索引引擎
 
 **2.1 LanceDB 集成 (`infrastructure/database/`)**
-- [ ] `schema.ts`：定义向量表结构（`id`、`file_path`、`chunk_index`、`text`、`vector`、`metadata`、`updated_at`）
-- [ ] `lance-adapter.ts`：实现 `IVectorStore` 接口
-- [ ] `lance-adapter.ts` → `init()`：初始化 LanceDB WASM 实例，打开/创建数据库
-- [ ] `lance-adapter.ts` → `upsert()`：插入或更新向量记录（按 `file_path + chunk_index` 去重）
-- [ ] `lance-adapter.ts` → `delete()`：按 `file_path` 删除该文件的所有向量记录
-- [ ] `lance-adapter.ts` → `search()`：ANN 近似最近邻查询，返回 Top-K 结果
-- [ ] `lance-adapter.ts` → `getStats()`：返回索引统计信息（总记录数、总文件数、数据库大小）
-- [ ] `lance-adapter.ts` → `close()`：安全关闭数据库连接
-- [ ] 验证 LanceDB WASM 在 Desktop / Android / iOS 三端能正常初始化与读写
+- [x] `schema.ts`：定义向量表结构（`id`、`file_path`、`chunk_index`、`text`、`vector`、`metadata`、`updated_at`）
+- [x] `lance-adapter.ts`：实现 `IVectorStore` 接口
+- [x] `lance-adapter.ts` → `init()`：初始化 LanceDB WASM 实例，打开/创建数据库
+- [x] `lance-adapter.ts` → `upsert()`：插入或更新向量记录（按 `file_path + chunk_index` 去重）
+- [x] `lance-adapter.ts` → `delete()`：按 `file_path` 删除该文件的所有向量记录
+- [x] `lance-adapter.ts` → `search()`：ANN 近似最近邻查询，返回 Top-K 结果
+- [x] `lance-adapter.ts` → `getStats()`：返回索引统计信息（总记录数、总文件数、数据库大小）
+- [x] `lance-adapter.ts` → `close()`：安全关闭数据库连接
+- [x] 验证 LanceDB WASM 在 Desktop / Android / iOS 三端能正常初始化与读写
 
 **2.2 领域接口 (`domain/interfaces/`)**
-- [ ] `vector-store.ts`：定义 `IVectorStore` 接口（`init`、`upsert`、`delete`、`search`、`getStats`、`close`）
+- [x] `vector-store.ts`：定义 `IVectorStore` 接口（`init`、`upsert`、`delete`、`search`、`getStats`、`close`）
 - [ ] `embedder.ts`：定义 `IEmbedder` 接口（`loadModel`、`embed(text): Promise<Float32Array>`、`embedBatch`、`unloadModel`）
 - [ ] `llm-provider.ts`：定义 `ILLMProvider` 接口（`chat`、`chatStream`、`getModels`、`testConnection`）
 
