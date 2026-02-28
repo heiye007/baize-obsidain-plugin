@@ -7,9 +7,15 @@
  * 3. 初始化核心服务（事件总线、日志、平台适配）
  * 4. 启动索引调度器
  */
-import { Plugin, WorkspaceLeaf, addIcon } from "obsidian";
-import type { BaizeSettings, PlatformType } from "./shared/types";
-import { DEFAULT_SETTINGS, VIEW_TYPE_BAIZE } from "./shared/constants";
+
+// ═══ 必须在最前面导入 polyfill ═══
+import "./polyfill-entry";
+
+import { Plugin, WorkspaceLeaf, addIcon, TFile } from "obsidian";
+import type { PlatformType } from "./shared/types";
+import { VIEW_TYPE_BAIZE } from "./shared/constants";
+import { validateSettings } from "./settings/default-settings";
+import type { BaizeSettings } from "./settings/default-settings";
 import { ICON_BAIZE, ICON_BAIZE_SVG } from "./shared/icon";
 import { EventBus } from "./shared/event-bus";
 import { Logger } from "./shared/logger";
@@ -19,12 +25,25 @@ import { getPlatform } from "./infrastructure/platform/platform-detect";
 import { DesktopPlatform } from "./infrastructure/platform/desktop";
 import { AndroidPlatform } from "./infrastructure/platform/android";
 import { IOSPlatform } from "./infrastructure/platform/ios";
+import { LanceAdapter } from "./infrastructure/database/lance-adapter";
+import { VoyAdapter } from "./infrastructure/database/voy-adapter";
+import type { IVectorStore } from "./domain/interfaces/vector-store";
+import { IndexScheduler } from "./application/index-scheduler";
+import { TransformersAdapter } from "./infrastructure/models/transformers-adapter";
+import { SyncService } from "./application/sync-service";
+import { BaizeEvents } from "./shared/event-bus";
 
 export default class BaizePlugin extends Plugin {
     settings!: BaizeSettings;
     eventBus!: EventBus;
     logger!: Logger;
     platform!: PlatformType;
+
+    vectorStore?: IVectorStore;
+    indexScheduler?: IndexScheduler;
+    transformersAdapter?: TransformersAdapter;
+
+    private syncService?: SyncService;
     private platformAdapter?: DesktopPlatform | AndroidPlatform | IOSPlatform;
 
     async onload(): Promise<void> {
@@ -65,8 +84,11 @@ export default class BaizePlugin extends Plugin {
             id: "rebuild-index",
             name: "白泽：重建全量索引",
             callback: () => {
-                // TODO: 第二阶段实现 index-scheduler.rebuildAll()
-                this.logger.info("触发全量索引重建...");
+                if (this.indexScheduler) {
+                    this.indexScheduler.fullSync();
+                } else {
+                    this.logger.warn("索引调度器尚未初始化");
+                }
             },
         });
 
@@ -78,10 +100,14 @@ export default class BaizePlugin extends Plugin {
         // ── 8. 平台特定初始化 ──
         this.initPlatformFeatures();
 
-        // ── 9. 启动索引调度器 ──
-        // TODO: 第二阶段实现
-        // this.indexScheduler = new IndexScheduler(...);
-        // this.indexScheduler.start();
+        // ── 9. 注册笔记切换监听（灵感联想）──
+        this.registerActiveNoteListener();
+
+        // ── 10. 初始化向量存储 ──
+        await this.initVectorStore();
+
+        // ── 10. 启动 Embedding 引擎与索引调度器 ──
+        await this.initEmbeddingPipeline();
 
         this.logger.info("白泽已就绪 ✨");
     }
@@ -89,13 +115,13 @@ export default class BaizePlugin extends Plugin {
     async onunload(): Promise<void> {
         this.logger.info("白泽正在休眠...");
 
-        // 释放 Worker 线程池
-        // TODO: 第二阶段实现
-        // this.workerPool?.terminate();
+        // 卸载 Embedding 模型
+        await this.transformersAdapter?.unloadModel();
 
-        // 关闭 LanceDB 连接
-        // TODO: 第二阶段实现
-        // this.vectorStore?.close();
+        // 关闭向量存储连接
+        if (this.vectorStore) {
+            await this.vectorStore.close();
+        }
 
         // 销毁平台适配器
         this.platformAdapter?.destroy();
@@ -109,7 +135,7 @@ export default class BaizePlugin extends Plugin {
     // ─── 设置管理 ───
 
     async loadSettings(): Promise<void> {
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+        this.settings = validateSettings(await this.loadData());
     }
 
     async saveSettings(): Promise<void> {
@@ -181,6 +207,204 @@ export default class BaizePlugin extends Plugin {
 
         if (leaf) {
             workspace.revealLeaf(leaf);
+        }
+    }
+
+    // ─── 向量存储初始化 ───
+
+    private async initVectorStore(): Promise<void> {
+        const pluginPath = this.app.vault.configDir + "/plugins/" + this.manifest.id;
+
+        if (this.platform === "desktop") {
+            try {
+                // 1. 获取插件目录的绝对路径，用于定位 node_modules 中的 native 模块
+                const adapter = this.app.vault.adapter;
+                // @ts-ignore - 使用内部方法获取绝对绝对路径 (Only works on Desktop)
+                const absolutePluginPath = adapter.getFullPath ? adapter.getFullPath(pluginPath) : "";
+
+                let lancedbModulePath: string | undefined = undefined;
+                if (absolutePluginPath) {
+                    const path = eval('require')('path');
+                    // 直接定位到 @lancedb/lancedb 模块路径
+                    lancedbModulePath = path.join(absolutePluginPath, 'node_modules', '@lancedb', 'lancedb');
+                    this.logger.info(`已计算 LanceDB 模块路径: ${lancedbModulePath}`);
+                }
+
+                // 2. 尝试初始化 LanceDB
+                this.logger.info("桌面端：尝试初始化 LanceDB...");
+                const lance = new LanceAdapter(
+                    pluginPath + "/baize_lancedb",
+                    this.logger,
+                    undefined, // modelName 
+                    lancedbModulePath
+                );
+                await lance.init();
+                this.vectorStore = lance;
+                return;
+            } catch (err) {
+                this.logger.warn("LanceDB 在此桌面环境无法运行，正在切换至 Voy (WASM) 模式...", err);
+            }
+        }
+
+        // 移动端或 LanceDB 失败的桌面端：使用 Voy (WASM)
+        this.logger.info("初始化 Voy (WASM) 向量库...");
+        const voy = new VoyAdapter(
+            this.app,
+            this.logger,
+            pluginPath + "/baize_voy.json"
+        );
+        await voy.init();
+        this.vectorStore = voy;
+    }
+
+    // ─── Embedding 管线初始化 ───
+
+    private async initEmbeddingPipeline(): Promise<void> {
+        if (!this.vectorStore) {
+            this.logger.warn("向量存储未就绪，跳过 Embedding 管线初始化");
+            return;
+        }
+
+        try {
+            // 1. 创建 TransformersAdapter（使用 @xenova/transformers v2）
+            this.transformersAdapter = new TransformersAdapter(this.logger);
+            this.logger.info("Embedding 引擎已创建 (Transformers v2 模式)");
+
+            // 2. 创建 IndexScheduler
+            this.indexScheduler = new IndexScheduler(
+                this.app,
+                this.eventBus,
+                this.vectorStore as any,
+                null as any, // modelManager 暂不使用
+                this.transformersAdapter as any,
+                this.logger
+            );
+            this.logger.info("索引调度器已创建");
+
+            // 3. 注册文件同步监听
+            this.syncService = new SyncService(
+                this.app,
+                this.eventBus,
+                this.logger,
+                [".obsidian/", ".trash/"]
+            );
+            this.syncService.setupListeners();
+            this.logger.info("文件同步监听已注册");
+
+            // 4. 后台异步加载模型（不阻塞插件启动）
+            const modelId = "Xenova/all-MiniLM-L6-v2";
+            this.logger.info(`正在后台加载 Embedding 模型: ${modelId}...`);
+
+            // 计算插件目录的资源路径，用于加载本地 WASM 文件
+            const pluginPath = this.app.vault.configDir + "/plugins/" + this.manifest.id;
+            const resourcePath = (this.app.vault.adapter as any).getResourcePath
+                ? (this.app.vault.adapter as any).getResourcePath(pluginPath)
+                : pluginPath;
+
+            this.transformersAdapter.loadModel(
+                modelId,
+                { quantized: true, pluginResourcePath: resourcePath },
+                (progress: number) => {
+                    if (progress % 20 === 0 || progress === 100) {
+                        this.logger.info(`模型加载进度: ${progress}%`);
+                    }
+                }
+            ).then(() => {
+                this.logger.info("Embedding 模型加载完成 ✅");
+                this.eventBus.emit(BaizeEvents.MODEL_READY);
+            }).catch((err: Error) => {
+                this.logger.error("Embedding 模型加载失败:", err);
+            });
+
+        } catch (err) {
+            this.logger.error("Embedding 管线初始化失败:", err);
+        }
+    }
+
+    // ─── 注册当前笔记切换监听（灵感联想）───
+    private registerActiveNoteListener(): void {
+        let lastNotePath = "";
+
+        // 监听活动文件变化
+        this.registerEvent(
+            this.app.workspace.on("active-leaf-change", async () => {
+                const file = this.app.workspace.getActiveFile();
+                if (!file) return;
+
+                const notePath = file.path;
+                if (notePath === lastNotePath) return;
+                lastNotePath = notePath;
+
+                this.logger.info(`[Insight] 切换到笔记: ${notePath}`);
+                this.eventBus.emit(BaizeEvents.SEARCH_START);
+
+                // 延迟执行，等待笔记内容加载
+                setTimeout(async () => {
+                    await this.updateInsightForNote(notePath);
+                }, 500);
+            })
+        );
+
+        this.logger.info("[Insight] 笔记切换监听已注册");
+    }
+
+    // ─── 更新灵感联想 ───
+    private async updateInsightForNote(notePath: string): Promise<void> {
+        try {
+            // 检查依赖
+            if (!this.transformersAdapter || !this.vectorStore) {
+                this.logger.warn("[Insight] 模型或向量存储未就绪");
+                return;
+            }
+
+            // 获取笔记内容
+            const file = this.app.vault.getAbstractFileByPath(notePath);
+            if (!file || !(file instanceof TFile)) {
+                this.logger.warn(`[Insight] 无法获取文件: ${notePath}`);
+                return;
+            }
+
+            const content = await this.app.vault.read(file);
+            if (!content || content.length < 10) {
+                this.logger.info("[Insight] 笔记内容太短，跳过联想");
+                this.eventBus.emit(BaizeEvents.INSIGHT_UPDATED, {
+                    notePath,
+                    results: []
+                });
+                return;
+            }
+
+            // 提取前1000字符作为查询内容
+            const queryText = content.slice(0, 1000).replace(/#+\s/g, "").trim();
+
+            // 编码查询
+            this.logger.info("[Insight] 编码笔记内容...");
+            const queryVector = await this.transformersAdapter.embed(queryText);
+
+            // 搜索相似内容（排除当前笔记）
+            this.logger.info("[Insight] 搜索相关内容...");
+            const allResults = await this.vectorStore.search(queryVector, 10, 0.3);
+
+            // 过滤掉当前笔记的结果
+            const results = allResults.filter(r => {
+                const resultPath = r.chunk.vectorId.split("::")[0];
+                return resultPath !== notePath;
+            }).slice(0, 5); // 取前5个
+
+            this.logger.info(`[Insight] 找到 ${results.length} 条相关笔记`);
+
+            // 触发更新事件
+            this.eventBus.emit(BaizeEvents.INSIGHT_UPDATED, {
+                notePath,
+                results
+            });
+
+        } catch (err) {
+            this.logger.error("[Insight] 更新失败:", err);
+            this.eventBus.emit(BaizeEvents.INSIGHT_UPDATED, {
+                notePath,
+                results: []
+            });
         }
     }
 }

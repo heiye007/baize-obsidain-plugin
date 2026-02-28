@@ -32,12 +32,13 @@ export class EmbeddingWorkerPool {
                 // 仅第一个 worker 报告加载进度，避免进度条闪烁
                 worker.onProgress(onProgress);
             }
-            worker.loadModel(modelName, options).then(() => {
+            this.workers.push(worker);
+            // 只调用一次 loadModel，完成后将 worker 加入空闲池
+            const p = worker.loadModel(modelName, options).then(() => {
                 this.idleWorkers.push(worker);
                 this.processQueue();
             });
-            this.workers.push(worker);
-            initPromises.push(worker.loadModel(modelName, options));
+            initPromises.push(p);
         }
 
         await Promise.all(initPromises);

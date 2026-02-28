@@ -524,7 +524,7 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 - [x] 监听 Obsidian 活动笔记切换事件 (`active-leaf-change`)
 - [x] 获取当前笔记全文内容
 - [x] 对当前笔记内容进行分块并通过 `SearchService.searchByVector` 获取语义特征
-- [x] 调用 `lance-adapter.search()` 搜索最相关的其它笔记片段（排除当前笔记自身）
+- [x] 调用 `vectorStore.search()` 搜索最相关的其它笔记片段（排除当前笔记自身）
 - [x] 防抖处理（用户快速切换笔记时，延迟 800ms 执行联想任务）
 - [x] 缓存最近 N 篇笔记的联想结果，采用 LRU 策略
 - [x] 通过事件总线推送 `insight:updated` 事件给 UI 层
@@ -594,62 +594,62 @@ ChatPanel (流式渲染回复 + 引用来源高亮)
 - [x] 索引未完成时显示引导提示（引导用户先完成索引）
 
 **4.9 状态指示器 (`ui/components/StatusBar.svelte`)**
-- [ ] 显示索引进度（X / Y 文件已索引）
-- [ ] 显示模型加载状态（未加载 / 加载中 / 就绪）
-- [ ] 显示模型下载进度（首次下载时）
-- [ ] 显示数据库统计（总向量数、数据库大小）
-- [ ] 点击展开详细信息面板
+- [x] 显示索引进度（X / Y 文件已索引，带金色进度条）
+- [x] 显示模型加载状态（未加载 / 加载中 / 就绪 / 错误，彩色状态点）
+- [x] 显示模型下载进度（渐变进度条）
+- [x] 显示数据库统计（总向量数、数据库大小）
+- [x] 点击展开详细信息面板（含模型名称、平台信息、折叠动画）
 
 ---
 
 ### 第五阶段：设置与配置
 
 **5.1 设置面板 (`settings/settings-tab.ts`)**
-- [ ] **模型设置**：选择 embedding 模型（预设模型列表下拉框）
-- [ ] **模型设置**：模型精度选择（自动 / FP16 / Q4）
-- [ ] **模型设置**：模型缓存管理（查看大小 + 清除缓存按钮）
-- [ ] **LLM 设置**：LLM 提供商选择（DeepSeek / OpenAI / Ollama / 自定义）
-- [ ] **LLM 设置**：API Key 输入框（密码类型，不明文显示）
-- [ ] **LLM 设置**：自定义 API Base URL 输入框
-- [ ] **LLM 设置**：对话模型选择（模型名称输入或下拉）
-- [ ] **LLM 设置**：连接测试按钮（验证 API Key 有效性）
-- [ ] **索引设置**：排除目录/文件列表（支持 glob 模式）
-- [ ] **索引设置**：分块策略选择（标题分割 / 固定长度 / 语义段落）
-- [ ] **索引设置**：分块大小设置（最大 tokens 数）
-- [ ] **索引设置**：移动端索引触发模式（自动 / 仅充电时 / 手动）
-- [ ] **索引设置**：手动触发全量重建索引按钮
-- [ ] **搜索设置**：默认返回结果数 (Top-K)
-- [ ] **搜索设置**：最低相似度阈值
-- [ ] **高级设置**：Worker 线程数（桌面端，默认自动）
-- [ ] **高级设置**：日志级别（debug / info / warn / error）
-- [ ] **关于**：插件版本、数据库统计、作者信息
+- [x] **模型设置**：选择 embedding 模型（预设模型列表下拉框）
+- [x] **模型设置**：模型精度选择（自动 / FP16 / Q4）
+- [x] **模型设置**：模型缓存管理（查看大小 + 清除缓存按钮）
+- [x] **LLM 设置**：LLM 提供商选择（DeepSeek / OpenAI / Ollama / 自定义）
+- [x] **LLM 设置**：API Key 输入框（密码类型，不明文显示）
+- [x] **LLM 设置**：自定义 API Base URL 输入框
+- [x] **LLM 设置**：对话模型选择（模型名称输入或下拉）
+- [x] **LLM 设置**：连接测试按钮（验证 API Key 有效性）
+- [x] **索引设置**：排除目录/文件列表（支持 glob 模式）
+- [x] **索引设置**：分块策略选择（标题分割 / 固定长度 / 语义段落）
+- [x] **索引设置**：分块大小设置（最大 tokens 数）
+- [x] **索引设置**：移动端索引触发模式（自动 / 仅充电时 / 手动）
+- [x] **索引设置**：手动触发全量重建索引按钮
+- [x] **搜索设置**：默认返回结果数 (Top-K)
+- [x] **搜索设置**：最低相似度阈值
+- [x] **高级设置**：Worker 线程数（桌面端，默认自动）
+- [x] **高级设置**：日志级别（debug / info / warn / error）
+- [x] **关于**：插件版本、数据库统计、作者信息
 
 **5.2 默认配置 (`settings/default-settings.ts`)**
-- [ ] 定义 `BaizeSettings` 类型接口
-- [ ] 定义所有设置项的默认值
-- [ ] 实现设置值校验函数（类型检查、范围限制）
+- [x] 定义 `BaizeSettings` 类型接口
+- [x] 定义所有设置项的默认值
+- [x] 实现设置值校验函数（类型检查、范围限制）
 
 ---
 
 ### 第六阶段：样式与视觉 (`styles/`)
 
-- [ ] `variables.css`：定义色彩体系 CSS 变量（亮色/暗色主题双套）
-- [ ] `variables.css`：定义字体、字号、间距、圆角、阴影 CSS 变量
-- [ ] `base.css`：基础重置样式 + 滚动条自定义
-- [ ] `components.css`：SearchBar 组件样式
-- [ ] `components.css`：ResultCard 卡片样式（悬停效果、分数标签）
-- [ ] `components.css`：ChatPanel 对话气泡样式（用户/AI 差异化配色）
-- [ ] `components.css`：InsightPanel 推荐项样式
-- [ ] `components.css`：StatusBar 进度条 + 状态标签样式
-- [ ] `components.css`：Tab 切换 / Segmented Control 样式
-- [ ] `desktop.css`：侧边面板骨架布局
-- [ ] `desktop.css`：拖拽交互视觉反馈（拖拽中的半透明副本）
-- [ ] `mobile.css`：Bottom Sheet 滑动动画
-- [ ] `mobile.css`：单手操作热区高亮
-- [ ] `mobile.css`：iOS Safe Area padding
-- [ ] `mobile.css`：Android 导航栏适配
-- [ ] 验证 Obsidian 默认主题（亮色 + 暗色）下的视觉一致性
-- [ ] 验证主流第三方主题（Minimal、Things、Blue Topaz）的兼容性
+- [x] `variables.css`：定义色彩体系 CSS 变量（亮色/暗色主题双套）
+- [x] `variables.css`：定义字体、字号、间距、圆角、阴影 CSS 变量
+- [x] `base.css`：基础重置样式 + 滚动条自定义
+- [x] `components.css`：SearchBar 组件样式
+- [x] `components.css`：ResultCard 卡片样式（悬停效果、分数标签）
+- [x] `components.css`：ChatPanel 对话气泡样式（用户/AI 差异化配色）
+- [x] `components.css`：InsightPanel 推荐项样式
+- [x] `components.css`：StatusBar 进度条 + 状态标签样式
+- [x] `components.css`：Tab 切换 / Segmented Control 样式
+- [x] `desktop.css`：侧边面板骨架布局
+- [x] `desktop.css`：拖拽交互视觉反馈（拖拽中的半透明副本）
+- [x] `mobile.css`：Bottom Sheet 滑动动画
+- [x] `mobile.css`：单手操作热区高亮
+- [x] `mobile.css`：iOS Safe Area padding
+- [x] `mobile.css`：Android 导航栏适配
+- [x] 验证 Obsidian 默认主题（亮色 + 暗色）下的视觉一致性
+- [x] 验证主流第三方主题（Minimal、Things、Blue Topaz）的兼容性
 
 ---
 

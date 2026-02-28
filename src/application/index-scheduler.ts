@@ -9,21 +9,19 @@
  */
 import { App, TFile } from "obsidian";
 import { EventBus, BaizeEvents } from "../shared/event-bus";
-import type { LanceAdapter } from "../infrastructure/database/lance-adapter";
-import type { ModelManager } from "../infrastructure/models/model-manager";
-import type { ONNXEmbedder } from "../infrastructure/models/onnx-embedder";
-import { MarkdownChunker } from "../domain/chunking/markdown-chunker";
+import type { IEmbedder } from "../domain/interfaces/embedder";
 import type { Logger } from "../shared/logger";
 import type { VectorRecord } from "../infrastructure/database/schema";
+import { MarkdownChunker } from "../domain/chunking/markdown-chunker";
 
 export class IndexScheduler {
     private app: App;
     private events: EventBus;
-    private db: LanceAdapter;
-    private modelManager: ModelManager;
-    private embedder: ONNXEmbedder;
+    private db: any; // IVectorStore
+    private embedder: IEmbedder;
     private logger: Logger;
     private chunker: MarkdownChunker;
+    private modelReady = false;
 
     private queue: string[] = [];
     private isBusy = false;
@@ -31,15 +29,14 @@ export class IndexScheduler {
     constructor(
         app: App,
         events: EventBus,
-        db: LanceAdapter,
-        modelManager: ModelManager,
-        embedder: ONNXEmbedder,
+        db: any,
+        _modelManager: any, // 保留参数位以兼容现有调用
+        embedder: IEmbedder,
         logger: Logger
     ) {
         this.app = app;
         this.events = events;
         this.db = db;
-        this.modelManager = modelManager;
         this.embedder = embedder;
         this.logger = logger;
         this.chunker = new MarkdownChunker();
@@ -56,7 +53,7 @@ export class IndexScheduler {
 
         // 删除索引
         this.events.on(BaizeEvents.FILE_DELETED, (path: unknown) => {
-            this.db.delete(path as string).catch(err =>
+            this.db.delete(path as string).catch((err: Error) =>
                 this.logger.error(`[Index] Failed to delete index for ${path}`, err)
             );
         });
@@ -71,8 +68,10 @@ export class IndexScheduler {
             }
         });
 
-        // 如果模型加载完成，自动开启队列处理
+        // 如果模型加载完成，标记就绪并开启队列处理
         this.events.on(BaizeEvents.MODEL_READY, () => {
+            this.modelReady = true;
+            this.logger.info("[Index] 模型已就绪，开始处理索引队列...");
             this.processQueue();
         });
     }
@@ -108,9 +107,8 @@ export class IndexScheduler {
     private async processQueue(totalForProgress?: number) {
         if (this.isBusy || this.queue.length === 0) return;
 
-        // 检查模型是否准备好，没准备好不处理队列
-        const modelId = this.modelManager.getRecommendedModelId();
-        if (!this.modelManager.isReady(modelId)) {
+        // 检查模型是否准备好
+        if (!this.modelReady) {
             this.logger.warn("[Index] Model not ready, indexing queue paused.");
             return;
         }

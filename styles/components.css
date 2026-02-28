@@ -1,0 +1,865 @@
+/* ═══ 白泽 Baize - 组件样式库 ═══ */
+
+/* ── 1. SearchBox (输入框组) ── */
+.input-area {
+    padding: var(--baize-sp-md) var(--baize-sp-lg) 48px var(--baize-sp-lg);
+    /* 安全底边距提升至 48px 以完全避开状态栏 */
+    background: linear-gradient(to top, var(--baize-glass-bg), transparent);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--baize-glass-border);
+}
+
+.search-box {
+    display: flex;
+    flex-direction: column;
+    padding: var(--baize-sp-sm) var(--baize-sp-md);
+    border-radius: var(--baize-radius-lg);
+    background: var(--baize-input-bg);
+    border: 1px solid var(--baize-glass-border);
+    transition: all var(--baize-transition-normal);
+    position: relative;
+}
+
+.search-box:focus-within {
+    border-color: var(--baize-gold);
+    box-shadow: var(--baize-shadow-gold), inset 0 0 10px rgba(var(--baize-gold-rgb), 0.05);
+    background: var(--baize-bg-secondary);
+}
+
+.search-box textarea.chat-textarea {
+    border: none !important;
+    background: transparent !important;
+    padding: var(--baize-sp-xs) 0 !important;
+    font-size: 14px;
+    resize: none;
+    min-height: 48px;
+    color: var(--text-normal);
+    line-height: 1.6;
+    box-shadow: none !important;
+}
+
+.input-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--baize-sp-xs);
+    opacity: 0.8;
+}
+
+.input-hint {
+    font-size: 10.5px;
+    color: var(--text-faint);
+    letter-spacing: 0.02em;
+}
+
+.send-btn {
+    background: none !important;
+    border: none !important;
+    color: var(--baize-gold) !important;
+    cursor: pointer;
+    padding: 6px !important;
+    transition: all var(--baize-transition-fast);
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.send-btn:hover:not(:disabled) {
+    background: rgba(var(--baize-gold-rgb), 0.1) !important;
+    transform: scale(1.1) rotate(-10deg);
+}
+
+/* 停止生成按钮 */
+.stop-btn {
+    align-self: flex-start;
+    margin-bottom: 8px;
+    padding: 4px 10px !important;
+    background: var(--baize-bg-secondary) !important;
+    border: 1px solid var(--baize-glass-border) !important;
+    border-radius: var(--baize-radius-md);
+    font-size: 11px;
+    color: var(--text-muted) !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.baize-chat-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* ── 2. Message (对话气泡) ── */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--baize-sp-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--baize-sp-lg);
+}
+
+.message {
+    max-width: 92%;
+    padding: 14px 18px;
+    border-radius: var(--baize-radius-lg);
+    font-size: 14px;
+    line-height: 1.65;
+    word-break: break-word;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.message.assistant {
+    background: var(--baize-bg-secondary);
+    border: 1px solid var(--baize-glass-border);
+    color: var(--text-normal);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+    box-shadow: var(--baize-shadow-sm);
+}
+
+.message.user {
+    background: linear-gradient(135deg, var(--baize-gold), var(--baize-gold-dark));
+    color: #000;
+    font-weight: 500;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 15px rgba(var(--baize-gold-rgb), 0.2);
+}
+
+/* 引用卡片 (Reference Card) */
+.baize-citation-wrapper,
+.reference-card {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(198, 166, 103, 0.1);
+    border-left: 2px solid var(--baize-gold);
+    font-size: 12px;
+    color: var(--baize-gold);
+    border-radius: 2px 8px 8px 2px;
+    cursor: pointer;
+    transition: var(--baize-transition-fast);
+}
+
+.baize-citation-wrapper:hover,
+.reference-card:hover {
+    background: rgba(198, 166, 103, 0.15);
+}
+
+/* ── 3. ResultCard (搜索结果) ── */
+.search-results-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--baize-sp-md) var(--baize-sp-md) 44px var(--baize-sp-md);
+    /* 底部留白避开状态栏 */
+}
+
+.results-count {
+    font-size: 11px;
+    color: var(--text-faint);
+    padding-bottom: var(--baize-sp-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.baize-result-card {
+    padding: var(--baize-sp-md);
+    background: var(--baize-bg-secondary);
+    border: 1px solid var(--baize-glass-border);
+    border-radius: var(--baize-radius-lg);
+    margin-bottom: var(--baize-sp-md);
+    cursor: pointer;
+    transition: all var(--baize-transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.baize-result-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+}
+
+.baize-result-card:hover::after {
+    transform: translateX(100%);
+}
+
+.baize-result-card:hover {
+    border-color: rgba(var(--baize-gold-rgb), 0.5);
+    background: var(--baize-bg-tertiary);
+    transform: translateY(-3px);
+    box-shadow: var(--baize-shadow-md);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+}
+
+.card-source {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-normal);
+    margin-bottom: 2px;
+}
+
+.card-heading {
+    font-size: 11px;
+    color: var(--text-faint);
+}
+
+.card-score {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--baize-gold);
+    background: rgba(var(--baize-gold-rgb), 0.1);
+    padding: 2px 6px;
+    border-radius: var(--baize-radius-full);
+}
+
+.card-content {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-path {
+    font-size: 10px;
+    color: var(--text-faint);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── 6. SearchPanel (语义搜索面板) ── */
+.baize-search-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* ── 7. SearchBar (专门用于搜索页的输入框) ── */
+.baize-search-bar {
+    position: relative;
+    padding: var(--baize-sp-sm) var(--baize-sp-md);
+}
+
+.search-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--baize-input-bg);
+    border: 1px solid var(--baize-glass-border);
+    border-radius: var(--baize-radius-lg);
+    padding: 8px 12px;
+    transition: all var(--baize-transition-normal);
+}
+
+.search-input-wrapper:focus-within {
+    border-color: var(--baize-gold);
+    box-shadow: var(--baize-shadow-gold);
+    background: var(--baize-bg-secondary);
+}
+
+.search-icon {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+.search-input {
+    flex: 1;
+    border: none !important;
+    background: transparent !important;
+    outline: none !important;
+    color: var(--text-normal);
+    font-size: 14px;
+    padding: 2px 0;
+    box-shadow: none !important;
+}
+
+.search-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--baize-glass-border);
+    border-top-color: var(--baize-gold);
+    border-radius: 50%;
+    animation: baize-spin 0.8s linear infinite;
+}
+
+@keyframes baize-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 搜索历史 */
+.search-history {
+    position: absolute;
+    left: var(--baize-sp-md);
+    right: var(--baize-sp-md);
+    top: 100%;
+    background: var(--baize-glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--baize-glass-border);
+    border-radius: var(--baize-radius-md);
+    box-shadow: var(--baize-shadow-lg);
+    z-index: 100;
+    overflow: hidden;
+    margin-top: 6px;
+    animation: baize-fade-in-up 0.2s ease;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    font-size: 10px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--baize-glass-border);
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background var(--baize-transition-fast);
+}
+
+.history-item:hover {
+    background: var(--baize-bg-tertiary);
+}
+
+.history-icon {
+    color: var(--text-faint);
+}
+
+.history-text {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* ── 4. Insight (灵感面板) ── */
+.baize-insight-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.insight-header {
+    padding: var(--baize-sp-md) var(--baize-sp-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--baize-glass-border);
+}
+
+.insight-title {
+    font-size: 12px;
+    color: var(--baize-gold);
+    font-weight: 600;
+}
+
+.insight-current {
+    font-size: 11px;
+    color: var(--text-faint);
+}
+
+.insight-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--baize-sp-lg) var(--baize-sp-lg) 44px var(--baize-sp-lg);
+    /* 底部留白避开状态栏 */
+}
+
+.insight-card {
+    background: linear-gradient(to bottom right, var(--baize-bg-secondary), transparent);
+    padding: var(--baize-sp-md);
+    border-radius: var(--baize-radius-lg);
+    border: 1px solid var(--baize-glass-border);
+    margin-bottom: var(--baize-sp-md);
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--baize-transition-normal);
+    display: flex;
+    gap: 12px;
+}
+
+.insight-card:hover {
+    border-color: var(--baize-gold);
+    background: var(--baize-bg-tertiary);
+    transform: translateX(4px);
+}
+
+.card-rank {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--baize-bg-tertiary);
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--text-faint);
+}
+
+.insight-card:first-child .card-rank {
+    background: var(--baize-gold);
+    color: #000;
+}
+
+.card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-top-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.card-snippet {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 6px 0;
+}
+
+/* ── 5. 空状态与动画 ── */
+.results-loading,
+.results-empty,
+.insight-loading,
+.insight-empty,
+.insight-guide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--baize-sp-xl) 0;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.guide-icon,
+.empty-icon {
+    font-size: 32px;
+    margin-bottom: var(--baize-sp-md);
+    opacity: 0.5;
+}
+
+.guide-hint,
+.empty-hint {
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 4px;
+}
+
+/* 三点加载动画 (Search) */
+.loading-dots {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.loading-dots span {
+    width: 6px;
+    height: 6px;
+    background-color: var(--baize-gold);
+    border-radius: 50%;
+    animation: baize-bounce 1.2s infinite ease-in-out;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes baize-bounce {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0.6);
+        opacity: 0.4;
+    }
+
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 呼吸环加载 (Insight) */
+.loading-pulse {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--baize-gold);
+    opacity: 0.2;
+    animation: baize-pulse 1.5s ease-in-out infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes baize-pulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.2;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(0.8);
+        opacity: 0.2;
+    }
+}
+
+@keyframes baize-fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.message,
+.baize-result-card,
+.insight-card {
+    animation: baize-fade-in-up var(--baize-transition-normal);
+}
+
+/* ── 6. Tab Bar ── */
+.baize-tab-bar {
+    display: flex;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 3px;
+    margin: 4px var(--baize-sp-md) var(--baize-sp-sm);
+    border-radius: var(--baize-radius-md);
+    gap: 2px;
+    border: 1px solid var(--baize-glass-border);
+}
+
+.baize-tab {
+    flex: 1;
+    padding: 8px 4px !important;
+    text-align: center;
+    font-size: 11px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all var(--baize-transition-normal);
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    font-weight: 500;
+}
+
+.baize-tab:hover {
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.03) !important;
+}
+
+.baize-tab.active {
+    background: var(--baize-gold) !important;
+    color: #000 !important;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ═══ Markdown 渲染美化 ═══ */
+
+/* 段落 */
+.baize-paragraph {
+    margin: 0.5em 0;
+    line-height: 1.7;
+}
+
+/* 标题 */
+.baize-h1,
+.baize-h2,
+.baize-h3,
+.baize-h4 {
+    margin: 1em 0 0.5em;
+    color: var(--baize-gold);
+    font-weight: 600;
+}
+
+.baize-h1 { font-size: 1.4em; border-bottom: 1px solid var(--baize-glass-border); padding-bottom: 0.3em; }
+.baize-h2 { font-size: 1.25em; }
+.baize-h3 { font-size: 1.1em; }
+.baize-h4 { font-size: 1em; opacity: 0.9; }
+
+/* 加粗和斜体 */
+.baize-bold {
+    color: var(--baize-gold);
+    font-weight: 600;
+}
+
+.baize-italic {
+    font-style: italic;
+    opacity: 0.9;
+}
+
+/* 代码块 */
+.baize-code-wrapper {
+    margin: 1em 0;
+    border-radius: var(--baize-radius-md);
+    overflow: hidden;
+    background: var(--baize-bg-secondary);
+    border: 1px solid var(--baize-glass-border);
+}
+
+.baize-code-header {
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--baize-glass-border);
+}
+
+.baize-code-block {
+    margin: 0;
+    padding: 12px;
+    background: transparent;
+    overflow-x: auto;
+}
+
+.baize-code-block code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-normal);
+}
+
+/* 行内代码 */
+.baize-inline-code {
+    background: rgba(198, 166, 103, 0.15);
+    color: var(--baize-gold);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+}
+
+/* 引用块 */
+.baize-blockquote {
+    margin: 1em 0;
+    padding: 12px 16px;
+    background: var(--baize-bg-secondary);
+    border-left: 3px solid var(--baize-gold);
+    border-radius: 0 var(--baize-radius-sm) var(--baize-radius-sm) 0;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.baize-blockquote br:last-child {
+    display: none;
+}
+
+/* 列表 */
+.baize-list,
+.baize-olist {
+    margin: 0.8em 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.baize-list-item,
+.baize-olist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0.4em 0;
+    padding: 4px 0;
+}
+
+.baize-list-marker {
+    color: var(--baize-gold);
+    font-size: 1.2em;
+    line-height: 1.2;
+    flex-shrink: 0;
+}
+
+.baize-list-number::before {
+    content: attr(data-num);
+    color: var(--baize-gold);
+    font-weight: 600;
+    min-width: 1.5em;
+}
+
+.baize-list-content {
+    flex: 1;
+}
+
+/* 分隔线 */
+.baize-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--baize-glass-border), transparent);
+    margin: 1.5em 0;
+}
+
+/* 引用标记 */
+.baize-citation {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background: var(--baize-gold);
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all var(--baize-transition-fast);
+    vertical-align: super;
+    margin-left: 2px;
+}
+
+.baize-citation:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 6px rgba(198, 166, 103, 0.4);
+}
+
+/* 链接 */
+.baize-link {
+    color: var(--baize-gold);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--baize-gold);
+    transition: all var(--baize-transition-fast);
+}
+
+.baize-link:hover {
+    border-bottom-style: solid;
+    background: rgba(198, 166, 103, 0.1);
+}
+
+/* 标签 */
+.baize-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: rgba(198, 166, 103, 0.15);
+    color: var(--baize-gold);
+    font-size: 0.9em;
+    border-radius: 12px;
+    border: 1px solid rgba(198, 166, 103, 0.3);
+    transition: all var(--baize-transition-fast);
+    cursor: pointer;
+}
+
+.baize-tag:hover {
+    background: rgba(198, 166, 103, 0.25);
+    border-color: var(--baize-gold);
+    transform: translateY(-1px);
+}
+
+/* 高亮 */
+.baize-highlight {
+    background: linear-gradient(120deg, rgba(198, 166, 103, 0.3) 0%, rgba(198, 166, 103, 0.2) 100%);
+    color: var(--baize-gold);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* 表格 */
+.baize-table-wrapper {
+    margin: 1em 0;
+    overflow-x: auto;
+    border-radius: var(--baize-radius-md);
+    border: 1px solid var(--baize-glass-border);
+}
+
+.baize-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.baize-thead {
+    background: var(--baize-bg-secondary);
+}
+
+.baize-th {
+    padding: 10px 12px;
+    text-align: left;
+    color: var(--baize-gold);
+    font-weight: 600;
+    border-bottom: 2px solid var(--baize-gold);
+    white-space: nowrap;
+}
+
+.baize-tbody {
+    background: var(--baize-bg-tertiary);
+}
+
+.baize-td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--baize-glass-border);
+    color: var(--text-normal);
+}
+
+.baize-tr:last-child .baize-td {
+    border-bottom: none;
+}
+
+.baize-tr:hover {
+    background: rgba(198, 166, 103, 0.05);
+}

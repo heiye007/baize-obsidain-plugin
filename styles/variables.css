@@ -1,48 +1,81 @@
-/* ═══ 白泽 Baize - 全局 CSS 变量 ═══ */
+/* ═══ 白泽 Baize - 全级设计令牌 (Design Tokens) ═══ */
 
 :root {
-    /* 主色调 - 玄金 */
-    --baize-gold: #c9a96e;
-    --baize-gold-light: #dfc392;
-    --baize-gold-dark: #a8884f;
+    /* ── 核心色彩 (瑞兽金系) ── */
+    --baize-gold: #c6a667;
+    --baize-gold-rgb: 198, 166, 103;
+    --baize-gold-light: #d4bc8a;
+    --baize-gold-dark: #b18d45;
 
-    /* 背景色 */
-    --baize-bg-primary: var(--background-primary);
-    --baize-bg-secondary: var(--background-secondary);
-    --baize-bg-panel: var(--background-secondary-alt);
+    /* ── 语义色彩 ── */
+    --baize-success: #4ade80;
+    --baize-warning: #fbbf24;
+    --baize-error: #f87171;
+    --baize-info: #60a5fa;
 
-    /* 文字色 */
-    --baize-text-primary: var(--text-normal);
-    --baize-text-secondary: var(--text-muted);
-    --baize-text-accent: var(--baize-gold);
+    /* ── 间距体系 - 针对侧边栏紧凑渲染 ── */
+    --baize-sp-xs: 4px;
+    --baize-sp-sm: 8px;
+    --baize-sp-md: 12px;
+    --baize-sp-lg: 16px;
+    --baize-sp-xl: 24px;
 
-    /* 间距 */
-    --baize-spacing-xs: 4px;
-    --baize-spacing-sm: 8px;
-    --baize-spacing-md: 16px;
-    --baize-spacing-lg: 24px;
-    --baize-spacing-xl: 32px;
-
-    /* 圆角 */
+    /* ── 圆角 ── */
     --baize-radius-sm: 4px;
     --baize-radius-md: 8px;
     --baize-radius-lg: 12px;
+    --baize-radius-xl: 16px;
     --baize-radius-full: 9999px;
 
-    /* 阴影 */
-    --baize-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --baize-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
-    --baize-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+    /* ── 阴影 ── */
+    --baize-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --baize-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --baize-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
+    --baize-shadow-gold: 0 0 15px rgba(198, 166, 103, 0.1);
 
-    /* 字体 */
-    --baize-font-size-xs: 11px;
-    --baize-font-size-sm: 13px;
-    --baize-font-size-md: 14px;
-    --baize-font-size-lg: 16px;
-    --baize-font-size-xl: 20px;
+    /* ── 动画 ── */
+    --baize-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --baize-transition-fast: 0.1s var(--baize-ease);
+    --baize-transition-normal: 0.3s var(--baize-ease);
+    --baize-transition-slow: 0.5s var(--baize-ease);
 
-    /* 动画 */
-    --baize-transition-fast: 150ms ease;
-    --baize-transition-normal: 250ms ease;
-    --baize-transition-slow: 400ms ease;
+    /* ── 字体 ── */
+    --baize-font-serif: 'Noto Serif SC', 'STSong', 'Microsoft YaHei UI', serif;
+}
+
+/* ── 主题适配容器 ── */
+.theme-dark .baize-sidebar-container {
+    --baize-bg-primary: #0f1115;
+    --baize-bg-secondary: rgba(255, 255, 255, 0.035);
+    --baize-bg-tertiary: rgba(255, 255, 255, 0.07);
+    --baize-glass-bg: rgba(20, 22, 28, 0.85);
+    --baize-glass-border: rgba(255, 255, 255, 0.06);
+    --baize-text-contrast: #000;
+    --baize-ink-gradient: linear-gradient(135deg, #16181d 0%, #0c0d10 100%);
+    --baize-input-bg: rgba(255, 255, 255, 0.04);
+}
+
+.theme-light .baize-sidebar-container {
+    --baize-bg-primary: #ffffff;
+    --baize-bg-secondary: #f6f8fa;
+    --baize-bg-tertiary: #eff1f3;
+    --baize-glass-bg: rgba(255, 255, 255, 0.9);
+    --baize-glass-border: rgba(0, 0, 0, 0.06);
+    --baize-text-contrast: #fff;
+    --baize-ink-gradient: linear-gradient(135deg, #f5f7f9 0%, #ffffff 100%);
+    --baize-input-bg: rgba(0, 0, 0, 0.02);
+}
+
+/* 覆盖 Obsidian 全局干扰 */
+.baize-sidebar-container {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: var(--font-interface);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+.baize-sidebar-container * {
+    box-sizing: border-box;
 }

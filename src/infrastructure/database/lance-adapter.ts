@@ -64,19 +64,38 @@ export class LanceAdapter implements IVectorStore {
     private logger: Logger;
     private dbPath: string;
     private dimensions: number;
+    private modulePath?: string;
 
-    constructor(dbPath: string, logger: Logger, modelName?: string) {
+    constructor(dbPath: string, logger: Logger, modelName?: string, modulePath?: string) {
         this.dbPath = dbPath;
         this.logger = logger;
         this.dimensions = MODEL_DIMENSIONS[modelName ?? "Xenova/all-MiniLM-L6-v2"] ?? 384;
+        this.modulePath = modulePath;
     }
 
     // ─── init() ───
 
     async init(): Promise<void> {
         try {
-            // 动态导入 LanceDB，避免在不支持 native binding 的平台报错
-            const lancedb = await import("@lancedb/lancedb");
+            // 尝试加载 LanceDB。在某些渲染进程中，import 可能失败，
+            // 此时会抛出"Failed to resolve module specifier"错误。
+            // 这里我们显式捕获它，以便 main.ts 可以决定是否切换到 VoyAdapter。
+            this.logger.info("正在尝试初始化 LanceDB (Native)...");
+
+            let lancedb;
+            try {
+                if (this.modulePath) {
+                    this.logger.debug(`通过绝对路径加载 LanceDB: ${this.modulePath}`);
+                    lancedb = eval('require')(this.modulePath);
+                } else {
+                    // 在 Obsidian 桌面环境中使用 eval('require') 来加载 native 模块
+                    lancedb = eval('require')("@lancedb/lancedb");
+                }
+            } catch (importErr) {
+                this.logger.warn("加载 @lancedb/lancedb 失败 (Native 模块可能未在环境中注册或路径不正确):", importErr);
+                throw new Error(`模块无法加载: ${importErr}`);
+            }
+
             this.db = await (lancedb.connect as unknown as (uri: string) => Promise<LanceConnection>)(this.dbPath);
 
             // 检查表是否已存在
@@ -93,6 +112,7 @@ export class LanceAdapter implements IVectorStore {
                 this.logger.info("LanceDB 表已创建");
             }
         } catch (e) {
+            this.logger.error("LanceDB 引擎不可用", e);
             throw new StorageError(
                 `LanceDB 初始化失败: ${e instanceof Error ? e.message : String(e)}`
             );

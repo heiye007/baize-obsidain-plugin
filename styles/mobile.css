@@ -1,57 +1,62 @@
-/* ═══ 白泽 Baize - 移动端特有样式 ═══ */
+/* ═══ 白泽 Baize - 移动端专有样式 ═══ */
 
-/* 移动端 Modal 容器适配 */
-.baize-mobile-modal {
-    padding: 0 !important;
-    border-radius: var(--baize-radius-lg) var(--baize-radius-lg) 0 0 !important;
+/* ── Bottom Sheet (底部面板) ── */
+.baize-mobile-container {
+    display: flex;
+    flex-direction: column;
+    background: var(--baize-bg-primary);
+    border-radius: var(--baize-radius-xl) var(--baize-radius-xl) 0 0;
     overflow: hidden;
+    padding-bottom: env(safe-area-inset-bottom, 16px);
 }
 
-/* 强制让 Modal 底部对齐（Bottom Sheet 效果） */
-@media (max-width: 600px) {
-    .baize-mobile-modal {
-        margin-top: auto !important;
-        margin-bottom: 0 !important;
-        max-height: 85vh !important;
-        width: 100% !important;
-        animation: baize-slide-up 0.3s ease-out;
-    }
-
-    .modal-bg {
-        background-color: rgba(0, 0, 0, 0.5) !important;
-    }
+.baize-drag-indicator {
+    width: 36px;
+    height: 4px;
+    background-color: var(--baize-glass-border);
+    border-radius: 2px;
+    margin: 8px auto;
+    flex-shrink: 0;
 }
 
-@keyframes baize-slide-up {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
-}
-
-/* Segmented Control 样式 */
+/* ── 分段控制器 (Mobile Segments) ── */
 .baize-segmented-control {
     display: flex;
-    background-color: var(--background-modifier-border);
-    border-radius: var(--baize-radius-md);
+    background: var(--baize-bg-secondary);
     padding: 2px;
-    margin: var(--baize-spacing-md);
+    margin: var(--baize-sp-md);
+    border-radius: var(--baize-radius-md);
+    gap: 2px;
 }
 
 .baize-segmented-item {
     flex: 1;
-    padding: 6px 0;
-    font-size: var(--baize-font-size-sm);
-    text-align: center;
-    border-radius: calc(var(--baize-radius-md) - 2px);
-    cursor: pointer;
-    transition: all var(--baize-transition-fast);
-    background: transparent;
     border: none;
+    background: transparent;
+    padding: 10px 0;
+    font-size: 13px;
+    border-radius: calc(var(--baize-radius-md) - 2px);
     color: var(--text-muted);
+    font-weight: 500;
+    transition: var(--baize-transition-fast);
 }
 
 .baize-segmented-item.active {
-    background-color: var(--baize-bg-primary);
-    color: var(--baize-gold);
-    box-shadow: var(--baize-shadow-sm);
-    font-weight: bold;
+    background: var(--baize-gold);
+    color: #000;
+    font-weight: 600;
+}
+
+/* ── 列表适配 ── */
+.baize-mobile-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 手势热区高亮 */
+.baize-segmented-item:active,
+.message.user:active {
+    opacity: 0.8;
+    transform: scale(0.98);
 }

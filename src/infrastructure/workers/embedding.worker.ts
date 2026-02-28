@@ -4,7 +4,7 @@
  * 运行在独立线程，负责加载大模型并进行数学运算。
  * 避免阻塞 Obsidian 主 UI 进程。
  */
-import { pipeline, env } from '@xenova/transformers';
+import { pipeline, env } from '@huggingface/transformers';
 import { WorkerMessageType } from './protocol';
 import type { WorkerRequest, WorkerResponse } from './protocol';
 
@@ -48,16 +48,19 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
  * 初始化模型
  */
 async function initModel(id: string, payload: { modelName: string, quantized?: boolean, cacheDir?: string }) {
-    const { modelName, quantized = true, cacheDir } = payload;
+    const { modelName, quantized = true } = payload;
 
-    // 如果指定了本地缓存路径，配置环境
-    if (cacheDir) {
-        env.localModelPath = cacheDir;
-        env.allowLocalModels = true;
+    // 在 Blob Worker 上下文中，本地相对路径无法解析
+    // 使用浏览器 Cache API 来持久化模型（env.useBrowserCache = true 已在顶部配置）
+    env.allowLocalModels = false;
+
+    // 关闭多线程模式，因为在 Electron 环境下可能会缺少 worker_threads 模块
+    if (env.backends?.onnx?.wasm) {
+        env.backends.onnx.wasm.numThreads = 1;
     }
 
     extractor = await pipeline('feature-extraction', modelName, {
-        quantized,
+        dtype: quantized ? "q8" : "fp32",
         progress_callback: (p: any) => {
             sendResponse(id, WorkerMessageType.PROGRESS, {
                 status: p.status,

@@ -1,8 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
+    import { BaizeEvents } from "../../shared/event-bus";
+    import { ICON_BAIZE_SVG } from "../../shared/icon";
     import type BaizePlugin from "../../main";
-    import StatusBar from "../components/StatusBar.svelte";
     import SearchPanel from "../components/SearchPanel.svelte";
     import ChatPanel from "../components/ChatPanel.svelte";
     import InsightPanel from "../components/InsightPanel.svelte";
@@ -14,65 +15,87 @@
 
     let { app, plugin }: Props = $props();
 
-    // 状态管理
-    let activeTab = $state("search"); // search, chat, insight
+    let activeTab = $state("chat"); // chat, search, insight  (原型默认对话)
+    let statusReady = $state(false);
 
     onMount(() => {
-        // 记住上次激活的 Tab (从设置中读取?)
-        // 暂时使用简单的内存记录，后续可以持久化到 plugin.settings
-        const lastTab = (plugin.settings as any).lastActiveTab;
+        const lastTab = plugin.settings.lastActiveTab;
         if (lastTab) activeTab = lastTab;
+
+        // 检查模型是否已就绪（可能已提前加载完成）
+        if (plugin.transformersAdapter) {
+            statusReady = true;
+        }
+
+        // 监听模型就绪事件
+        const handleModelReady = () => {
+            statusReady = true;
+        };
+        plugin.eventBus.on(BaizeEvents.MODEL_READY, handleModelReady);
+
+        return () => {
+            plugin.eventBus.off(BaizeEvents.MODEL_READY, handleModelReady);
+        };
     });
 
     function switchTab(tab: string) {
         activeTab = tab;
-        // 保存到设置
-        (plugin.settings as any).lastActiveTab = tab;
+        plugin.settings.lastActiveTab = tab;
         plugin.saveSettings();
     }
 </script>
 
-<div class="baize-desktop-container" data-app-version={app.version}>
-    <!-- 顶部状态栏 -->
-    <StatusBar {plugin} />
+<div class="baize-desktop" data-app-version={app.version}>
+    <!-- ═══ 顶部品牌栏 ═══ -->
+    <header class="baize-brand-header">
+        <div class="brand-left">
+            <svg
+                class="brand-logo-svg"
+                viewBox="0 0 100 100"
+                width="28"
+                height="28"
+                fill="var(--baize-gold, #c6a667)"
+            >
+                {@html ICON_BAIZE_SVG}
+            </svg>
+            <span class="brand-name"
+                >白泽 <span class="brand-en">B A I Z E</span></span
+            >
+        </div>
+        <div class="status-dot" class:ready={statusReady}></div>
+    </header>
 
-    <!-- 导航标签栏 -->
-    <nav class="baize-tabs">
+    <!-- ═══ 标签切换器 ═══ -->
+    <nav class="baize-tab-bar">
         <button
-            class="baize-tab-item"
-            class:active={activeTab === "search"}
-            onclick={() => switchTab("search")}
-        >
-            搜索
-        </button>
-        <button
-            class="baize-tab-item"
+            class="baize-tab"
             class:active={activeTab === "chat"}
-            onclick={() => switchTab("chat")}
+            onclick={() => switchTab("chat")}>瑞兽对话</button
         >
-            对话
-        </button>
         <button
-            class="baize-tab-item"
-            class:active={activeTab === "insight"}
-            onclick={() => switchTab("insight")}
+            class="baize-tab"
+            class:active={activeTab === "search"}
+            onclick={() => switchTab("search")}>语义搜索</button
         >
-            联想
-        </button>
+        <button
+            class="baize-tab"
+            class:active={activeTab === "insight"}
+            onclick={() => switchTab("insight")}>灵感联想</button
+        >
     </nav>
 
-    <!-- 主内容区 -->
-    <main class="baize-content">
-        {#if activeTab === "search"}
-            <div in:fade={{ duration: 200 }}>
-                <SearchPanel {plugin} />
-            </div>
-        {:else if activeTab === "chat"}
-            <div in:fade={{ duration: 200 }}>
+    <!-- ═══ 内容区域 ═══ -->
+    <main class="baize-view-area">
+        {#if activeTab === "chat"}
+            <div in:fade={{ duration: 180 }}>
                 <ChatPanel {plugin} />
             </div>
+        {:else if activeTab === "search"}
+            <div in:fade={{ duration: 180 }}>
+                <SearchPanel {plugin} />
+            </div>
         {:else if activeTab === "insight"}
-            <div in:fade={{ duration: 200 }}>
+            <div in:fade={{ duration: 180 }}>
                 <InsightPanel {plugin} />
             </div>
         {/if}
@@ -80,59 +103,5 @@
 </div>
 
 <style>
-    .baize-desktop-container {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        overflow: hidden;
-        background-color: var(--baize-bg-primary);
-    }
-
-    .baize-tabs {
-        display: flex;
-        border-bottom: 1px solid var(--divider-color);
-        background-color: var(--baize-bg-secondary);
-        padding: 0 8px;
-    }
-
-    .baize-tab-item {
-        flex: 1;
-        padding: 8px 4px;
-        background: transparent;
-        border: none;
-        border-bottom: 2px solid transparent;
-        color: var(--baize-text-secondary);
-        cursor: pointer;
-        font-size: var(--baize-font-size-sm);
-        transition: all var(--baize-transition-fast);
-        box-shadow: none !important;
-        border-radius: 0;
-    }
-
-    .baize-tab-item:hover {
-        color: var(--baize-text-primary);
-        background-color: var(--background-modifier-hover);
-    }
-
-    .baize-tab-item.active {
-        color: var(--baize-text-accent);
-        border-bottom-color: var(--baize-gold);
-        font-weight: bold;
-    }
-
-    .baize-content {
-        flex: 1;
-        overflow-y: auto;
-        position: relative;
-    }
-
-    /* 样式穿透到占位组件 */
-    :global(.panel-placeholder) {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 200px;
-        color: var(--text-muted);
-        font-style: italic;
-    }
+    /* 样式已移至 styles/desktop.css 以确保正确的全局优先级和主题适配 */
 </style>

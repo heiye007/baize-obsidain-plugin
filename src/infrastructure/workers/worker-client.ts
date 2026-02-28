@@ -14,7 +14,14 @@ export class EmbeddingWorkerClient implements IEmbedder {
     private progressCallback?: (progress: number, status: string) => void;
 
     constructor(workerPath: string) {
-        this.worker = new Worker(workerPath);
+        // Obsidian 的沙箱环境禁止跨 origin 加载 Worker 脚本，
+        // 使用 Blob URL + importScripts 绕过此限制
+        const blob = new Blob(
+            [`importScripts(${JSON.stringify(workerPath)});`],
+            { type: "application/javascript" }
+        );
+        const blobUrl = URL.createObjectURL(blob);
+        this.worker = new Worker(blobUrl);
         this.worker.onmessage = this.handleMessage.bind(this);
         this.worker.onerror = (err) => {
             console.error("Embedding Worker Error:", err);

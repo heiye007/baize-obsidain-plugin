@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(ls:*)",
+      "Bash(python:*)",
+      "Bash(node:*)",
+      "Bash(xargs grep:*)",
+      "Bash(npm install:*)",
+      "Bash(grep:*)",
+      "Bash(git:*)"
+    ]
+  }
+}

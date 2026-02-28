@@ -1,0 +1,88 @@
+/* ═══ 白泽 Baize - 基础全局样式 ═══ */
+
+/* 强制覆盖 Obsidian 视图容器 */
+.workspace-leaf-content[data-type="baize-sidebar-view"] .view-header {
+    display: none;
+}
+
+.workspace-leaf-content[data-type="baize-sidebar-view"] .view-content {
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+/* 全局滚动条美化 - 针对 Windows 的极窄化处理 */
+.baize-sidebar-container ::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+}
+
+.baize-sidebar-container ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.baize-sidebar-container ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: var(--baize-radius-full);
+}
+
+.baize-sidebar-container *:hover::-webkit-scrollbar-thumb {
+    background-color: var(--baize-bg-tertiary);
+}
+
+.baize-sidebar-container ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--baize-gold);
+}
+
+/* 自定义文本选区颜色 - 提升品牌感 */
+.baize-sidebar-container ::selection {
+    background-color: rgba(var(--baize-gold-rgb), 0.25);
+    color: inherit;
+}
+
+/* 基础交互反馈 */
+.baize-sidebar-container a,
+.baize-sidebar-container button {
+    transition: all var(--baize-transition-fast);
+    cursor: pointer;
+}
+
+.baize-sidebar-container *:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* 工具类 */
+.baize-hidden {
+    display: none !important;
+}
+
+.baize-flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.baize-text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.baize-glass {
+    background: var(--baize-glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--baize-glass-border);
+}
+
+.baize-sidebar-container {
+    height: 100%;
+    width: 100%;
+    scrollbar-gutter: stable;
+    /* 避免滚动条出现导致布局抖动 */
+}
+
+/* 隐藏 Obsidian 默认的焦点环，使用白泽自定义风格 */
+.baize-sidebar-container *:focus {
+    outline: none !important;
+}

@@ -27,8 +27,11 @@ export class BaizeSidebarView extends ItemView {
     }
 
     async onOpen(): Promise<void> {
-        const container = this.containerEl.children[1];
+        const container = this.containerEl.children[1] as HTMLElement;
         container.empty();
+        container.addClass('baize-sidebar-container');
+        container.style.height = '100%';
+        container.style.overflow = 'hidden';
 
         // 挂载 Svelte 5 组件
         this.component = mount(DesktopLayout, {

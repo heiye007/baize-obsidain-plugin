@@ -1,0 +1,99 @@
+/* ═══ 白泽 Baize - 桌面端样式 ═══ */
+
+.baize-desktop {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--baize-ink-gradient);
+    color: var(--text-normal);
+    overflow: hidden;
+    position: relative;
+    border-left: 1px solid var(--baize-glass-border);
+}
+
+/* 品牌头部 */
+.baize-brand-header {
+    padding: var(--baize-sp-md) var(--baize-sp-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--baize-glass-border);
+}
+
+.brand-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-name {
+    font-family: var(--baize-font-serif);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--baize-gold);
+    letter-spacing: 1px;
+}
+
+.brand-en {
+    font-family: var(--font-interface);
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: 3px;
+    opacity: 0.8;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--text-faint);
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.status-dot.ready {
+    background: var(--baize-success);
+    box-shadow: 0 0 10px var(--baize-success);
+}
+
+/* 内容主区域 */
+.baize-view-area {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.baize-view-area>div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* ── 拖拽反馈 ── */
+.baize-drag-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.7;
+    background: var(--baize-gold);
+    color: #000;
+    padding: var(--baize-sp-sm) var(--baize-sp-md);
+    border-radius: var(--baize-radius-md);
+    box-shadow: var(--baize-shadow-lg);
+    font-size: 12px;
+    transform: rotate(2deg);
+}
+
+/* ── 列表动画 ── */
+@keyframes baize-fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

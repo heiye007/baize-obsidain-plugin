@@ -17,11 +17,34 @@
     async function handleSearch(query: string) {
         isSearching = true;
         hasSearched = true;
+        results = [];
+
         try {
-            // TODO: 接入 SearchService
-            // results = await plugin.searchService.search(query);
             plugin.logger.info(`[UI] Search triggered: "${query}"`);
-            results = [];
+
+            // 1. 检查模型是否就绪
+            if (!plugin.transformersAdapter) {
+                plugin.logger.warn("[UI] TransformersAdapter not ready");
+                return;
+            }
+
+            // 2. 编码查询
+            plugin.logger.info("[UI] Encoding query...");
+            const queryVector = await plugin.transformersAdapter.embed(query);
+            plugin.logger.info(`[UI] Query encoded, vector length: ${queryVector.length}`);
+
+            // 3. 检查向量存储
+            if (!plugin.vectorStore) {
+                plugin.logger.warn("[UI] VectorStore not ready");
+                return;
+            }
+
+            // 4. 执行搜索
+            plugin.logger.info("[UI] Searching vector store...");
+            const searchResults = await plugin.vectorStore.search(queryVector, 10, 0.3);
+            plugin.logger.info(`[UI] Found ${searchResults.length} results`);
+
+            results = searchResults;
         } catch (err) {
             plugin.logger.error("[UI] Search failed:", err);
         } finally {
@@ -62,73 +85,5 @@
 </div>
 
 <style>
-    .baize-search-panel {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-
-    .search-results-area {
-        flex: 1;
-        overflow-y: auto;
-        padding: 0 var(--baize-spacing-md);
-    }
-
-    .results-loading,
-    .results-empty {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: var(--baize-spacing-xl) 0;
-        color: var(--text-muted);
-    }
-
-    .results-empty .hint {
-        font-size: var(--baize-font-size-xs);
-        color: var(--text-faint);
-        margin-top: 4px;
-    }
-
-    .results-count {
-        font-size: var(--baize-font-size-xs);
-        color: var(--text-muted);
-        padding: var(--baize-spacing-xs) 0 var(--baize-spacing-sm);
-    }
-
-    /* 三点加载动画 */
-    .loading-dots {
-        display: flex;
-        gap: 6px;
-        margin-bottom: 12px;
-    }
-
-    .loading-dots span {
-        width: 8px;
-        height: 8px;
-        background-color: var(--baize-gold);
-        border-radius: 50%;
-        animation: baize-bounce 1.2s infinite ease-in-out;
-    }
-
-    .loading-dots span:nth-child(2) {
-        animation-delay: 0.2s;
-    }
-
-    .loading-dots span:nth-child(3) {
-        animation-delay: 0.4s;
-    }
-
-    @keyframes baize-bounce {
-        0%,
-        80%,
-        100% {
-            transform: scale(0.6);
-            opacity: 0.4;
-        }
-        40% {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
+    /* 样式已移至 styles/components.css */
 </style>

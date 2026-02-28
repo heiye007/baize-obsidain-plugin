@@ -33,9 +33,23 @@ declare module "@lancedb/lancedb" {
     }
 }
 
-/** 允许 TypeScript 识别 .svelte 组件文件 */
-declare module "*.svelte" {
-    import { Component } from "svelte";
-    const component: Component<any>;
-    export default component;
+/** 允许导入 .wasm 二进制文件 (esbuild binary loader) */
+declare module "*.wasm" {
+    const content: Uint8Array;
+    export default content;
+}
+
+/** Voy 向量数据库类型补充 */
+declare module "voy-search/voy_search_bg.js" {
+    export class Voy {
+        constructor(resource?: any);
+        serialize(): string;
+        static deserialize(serialized: string): Voy;
+        add(resource: any): void;
+        search(query: Float32Array, k: number): any;
+        remove(resource: any): void;
+        clear(): void;
+        size(): number;
+    }
+    export function __wbg_set_wasm(val: any): void;
 }

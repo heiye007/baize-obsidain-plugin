@@ -1,7 +1,6 @@
 /**
  * 白泽 Baize - 常量定义
  */
-import type { BaizeSettings } from "./types";
 
 /** 插件 ID */
 export const PLUGIN_ID = "baize-obsidian-plugin";
@@ -18,20 +17,11 @@ export const LANCE_DB_PATH = `${DATA_DIR}/data.lance`;
 /** 模型缓存路径 */
 export const MODEL_CACHE_PATH = `${DATA_DIR}/cache`;
 
-/** 默认设置 */
-export const DEFAULT_SETTINGS: BaizeSettings = {
-    embeddingModel: "Xenova/all-MiniLM-L6-v2",
-    modelPrecision: "auto",
-    llmProvider: "deepseek",
-    apiKey: "",
-    apiBaseUrl: "",
-    chatModel: "deepseek-chat",
-    excludePaths: [],
-    chunkStrategy: "heading",
-    maxChunkTokens: 512,
-    mobileIndexMode: "auto",
-    topK: 10,
-    minScore: 0.3,
-    workerCount: 0, // 0 = auto
-    logLevel: "info",
-};
+/** 预设 Embedding 模型列表 */
+export const EMBEDDING_MODELS = [
+    { id: "Xenova/all-MiniLM-L6-v2", name: "all-MiniLM-L6-v2 (通用/英文/极其轻量)" },
+    { id: "Xenova/bge-small-zh-v1.5", name: "bge-small-zh-v1.5 (中文/极其轻量)" },
+    { id: "Xenova/bge-base-zh-v1.5", name: "bge-base-zh-v1.5 (中文/平衡)" },
+    { id: "Xenova/paraphrase-multilingual-MiniLM-L12-v2", name: "multilingual-MiniLM (多语言/轻量)" },
+    { id: "Xenova/nomic-embed-text-v1.5", name: "nomic-embed-text-v1.5 (高上下文/需高内存)" },
+];
