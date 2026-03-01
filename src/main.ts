@@ -42,6 +42,7 @@ export default class BaizePlugin extends Plugin {
     vectorStore?: IVectorStore;
     indexScheduler?: IndexScheduler;
     transformersAdapter?: TransformersAdapter;
+    lastInsightPayload: { notePath: string; results: any[] } | null = null;
 
     private syncService?: SyncService;
     private platformAdapter?: DesktopPlatform | AndroidPlatform | IOSPlatform;
@@ -208,6 +209,15 @@ export default class BaizePlugin extends Plugin {
         if (leaf) {
             workspace.revealLeaf(leaf);
         }
+
+        // 如果还没有触发过联想，主动触发一次
+        if (!this.lastInsightPayload || this.lastInsightPayload.results.length === 0) {
+            const activeFile = workspace.getActiveFile();
+            if (activeFile) {
+                // 异步触发，不阻塞界面打开
+                this.updateInsightForNote(activeFile.path);
+            }
+        }
     }
 
     // ─── 向量存储初始化 ───
@@ -367,10 +377,8 @@ export default class BaizePlugin extends Plugin {
             const content = await this.app.vault.read(file);
             if (!content || content.length < 10) {
                 this.logger.info("[Insight] 笔记内容太短，跳过联想");
-                this.eventBus.emit(BaizeEvents.INSIGHT_UPDATED, {
-                    notePath,
-                    results: []
-                });
+                this.lastInsightPayload = { notePath, results: [] };
+                this.eventBus.emit(BaizeEvents.INSIGHT_UPDATED, this.lastInsightPayload);
                 return;
             }
 
@@ -393,18 +401,14 @@ export default class BaizePlugin extends Plugin {
 
             this.logger.info(`[Insight] 找到 ${results.length} 条相关笔记`);
 
+            this.lastInsightPayload = { notePath, results };
             // 触发更新事件
-            this.eventBus.emit(BaizeEvents.INSIGHT_UPDATED, {
-                notePath,
-                results
-            });
+            this.eventBus.emit(BaizeEvents.INSIGHT_UPDATED, this.lastInsightPayload);
 
         } catch (err) {
             this.logger.error("[Insight] 更新失败:", err);
-            this.eventBus.emit(BaizeEvents.INSIGHT_UPDATED, {
-                notePath,
-                results: []
-            });
+            this.lastInsightPayload = { notePath, results: [] };
+            this.eventBus.emit(BaizeEvents.INSIGHT_UPDATED, this.lastInsightPayload);
         }
     }
 }

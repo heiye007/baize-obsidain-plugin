@@ -10,10 +10,10 @@
 
     let { plugin }: Props = $props();
 
-    let insights: SearchResult[] = $state([]);
-    let currentNote = $state("");
+    let insights: SearchResult[] = $state(plugin.lastInsightPayload?.results || []);
+    let currentNote = $state(plugin.lastInsightPayload?.notePath || "");
     let isLoading = $state(false);
-    let indexReady = $state(false); // TODO: 从实际索引状态读取
+    let indexReady = $state(true); // 默认已就绪，避免重启后没有索引完成事件导致一直卡住
 
     onMount(() => {
         const bus = plugin.eventBus;
